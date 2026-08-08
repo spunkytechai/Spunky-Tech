@@ -1,101 +1,20 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Hacker House Goa 2026 — Builder ID</title>
-<style>
-*{box-sizing:border-box}html,body{margin:0;padding:0;background:#07170f;color:#f5f1e7;font-family:Arial,Helvetica,sans-serif}button,input{font:inherit}.app{width:100%;max-width:691px;margin:0 auto;min-height:100vh;position:relative;overflow:hidden}.screen{position:relative;width:100%;display:none}.screen.active{display:block}.bg{display:block;width:100%;height:auto}.overlay{position:absolute;inset:0;pointer-events:none}.panel{pointer-events:auto}.step1-panel{position:absolute;left:2.75%;top:36.8%;width:94.5%;height:39.1%;border:3px solid #f5d500;border-radius:24px;background:#063b28;padding:24px;box-shadow:0 0 0 1px rgba(0,0,0,.2)}.label{display:block;color:#f6f3e8;font-size:17px;font-weight:700;letter-spacing:.06em;margin:0 0 10px;text-transform:uppercase}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field,.choice{height:74px;border:3px solid #f5d500;border-radius:14px;background:#0b261b;color:#f5f1e7;padding:0 18px;display:flex;align-items:center;justify-content:center;font-size:18px}.field{width:100%;justify-content:flex-start}.field::placeholder{color:#c8c5bc}.input-wrap{margin-top:24px}.cta{width:100%;height:76px;border:0;border-radius:14px;background:#ffd516;color:#063b28;font-weight:800;font-size:20px;cursor:pointer;margin-top:22px}.file{display:none}.photo-note{font-size:12px;color:#aeb8ae;text-align:center;margin-top:7px}.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#fff;color:#242424;border-radius:30px;padding:13px 22px;box-shadow:0 10px 40px #0005;z-index:50;display:none}.step2-wrap{position:relative}.hit{position:absolute;display:block;border:0;background:transparent;cursor:pointer;pointer-events:auto}.h1{left:2.8%;top:24.5%;width:46%;height:31.8%}.h2{left:50.8%;top:24.5%;width:46.2%;height:31.8%}.h3{left:2.8%;top:59.7%;width:46%;height:31.8%}.h4{left:50.8%;top:59.7%;width:46.2%;height:31.8%}.p1{left:2.8%;top:0;width:94.4%;height:32.2%;}.p2{left:2.8%;top:32.2%;width:46%;height:31.8%}.p3{left:50.8%;top:32.2%;width:46.2%;height:31.8%}.selected-frame{position:absolute;border:4px solid #ffd515;border-radius:16px;box-shadow:0 0 0 4px #ff1493;pointer-events:none;display:none}.step3-ui{position:absolute;left:2.75%;right:2.75%;top:10.7%;height:78%;pointer-events:none}.photo-layer{position:absolute;left:6%;right:6%;top:9.7%;height:74%;overflow:hidden;pointer-events:none}.photo-layer img{width:100%;height:100%;object-fit:cover;transform-origin:center;display:block}.frame-layer{position:absolute;inset:0;pointer-events:none}.zoombar{position:absolute;left:2.75%;right:2.75%;top:81%;height:5%;pointer-events:auto}.zoombar input{width:100%;accent-color:#ff1493}.step3-buttons{position:absolute;left:2.75%;right:2.75%;top:87%;height:5.4%;display:grid;grid-template-columns:1fr 1fr;gap:12px;pointer-events:auto}.outline,.yellow{border:3px solid #f5d500;border-radius:14px;font-size:18px;font-weight:700;cursor:pointer}.outline{background:#073b28;color:#f5f1e7}.yellow{background:#ffd516;color:#073b28;border-color:#ffd516}.final-card{position:absolute;left:14.3%;width:71.4%;top:23.8%;height:auto;pointer-events:none;display:block}.final-actions{position:absolute;left:2.75%;right:2.75%;top:83.8%;display:grid;gap:12px;pointer-events:auto}.final-actions button{height:74px;border-radius:14px;border:3px solid #f5d500;font-weight:700;font-size:20px;cursor:pointer}.download{background:#ffd516;color:#073b28;border-color:#ffd516!important}.share{background:#073b28;color:#f5f1e7}.xbtn{background:#0c1212;color:#f5f1e7;border-color:#0c1212!important}.another{background:#073b28;color:#f5f1e7}.hidden-canvas{display:none}
-@media(max-width:480px){.step1-panel{padding:22px}.label{font-size:16px}.field,.choice{height:68px;font-size:17px}.cta{height:72px}.final-actions button{height:68px;font-size:18px}}
-</style>
-</head>
-<body>
-<div class="app" id="app">
-  <section class="screen active" id="s1">
-    <img class="bg" src="assets/step1.jpg" alt="HH Goa reference">
-    <div class="overlay">
-      <div class="step1-panel panel">
-        <span class="label">Photo</span>
-        <div class="two">
-          <button class="choice" id="uploadBtn">Upload photo</button>
-          <button class="choice" id="cameraBtn">Take photo</button>
-        </div>
-        <input class="file" id="file" type="file" accept="image/*,.heic,.heif" capture="environment">
-        <div class="input-wrap"><span class="label">Name</span><input class="field" id="name" placeholder="Your name" maxlength="40"></div>
-        <div class="input-wrap"><span class="label">Designation / Stack</span><input class="field" id="role" placeholder="e.g. Full-stack builder" maxlength="50"></div>
-        <button class="cta" id="continue">Continue</button>
-        <div class="photo-note" id="photoNote"></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="screen" id="s2">
-    <div class="step2-wrap" id="framePicker">
-      <img class="bg" src="assets/step2_top.jpg">
-      <button class="hit h1" data-frame="arch"></button><button class="hit h2" data-frame="portrait"></button>
-      <button class="hit h3" data-frame="ornate"></button><button class="hit h4" data-frame="slim"></button>
-      <img class="bg" src="assets/step2_bottom.jpg">
-      <button class="hit p1" data-frame="landscape" style="top:1490px"></button>
-      <button class="hit p2" data-frame="circle" style="top:1920px"></button>
-      <button class="hit p3" data-frame="tall" style="top:1920px"></button>
-    </div>
-  </section>
-
-  <section class="screen" id="s3">
-    <div style="position:relative"><img class="bg" src="assets/step3.jpg">
-      <div class="step3-ui">
-        <div class="photo-layer" id="photoLayer"><img id="photo"></div>
-        <img class="frame-layer" id="frameLayer" src="assets/frame-arch.png">
-      </div>
-      <div class="zoombar"><input id="zoom" type="range" min="1" max="2.5" value="1" step="0.01"></div>
-      <div class="step3-buttons"><button class="outline" id="reset">Reset</button><button class="yellow" id="build">Build</button></div>
-    </div>
-  </section>
-
-  <section class="screen" id="s4">
-    <div style="position:relative"><img class="bg" src="assets/final1.jpg">
-      <img class="final-card" id="finalCard" src="assets/frame-arch.png">
-      <div class="final-actions">
-        <button class="download" id="download">↓ &nbsp; Download</button>
-        <button class="share" id="share">♧ &nbsp; Share</button>
-        <button class="xbtn" id="shareX">𝕏 &nbsp; Share to X</button>
-        <button class="another" id="another">Make another</button>
-      </div>
-    </div>
-  </section>
-</div>
-<div class="toast" id="toast">Screenshot saved</div>
-<canvas id="canvas" class="hidden-canvas"></canvas>
-<script>
-const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-let userPhoto=null, frame='arch', scale=1, built=false;
-const frames={arch:'assets/frame-arch.png',portrait:'assets/frame-portrait.png',ornate:'assets/frame-ornate.png',slim:'assets/frame-slim.png',landscape:'assets/frame-landscape.png',circle:'assets/frame-circle.png',tall:'assets/frame-tall.png'};
-function show(id){$$('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');window.scrollTo({top:0,behavior:'instant'})}
-function loadFile(f){if(!f)return; const r=new FileReader();r.onload=()=>{userPhoto=r.result;$('#photo').src=userPhoto;$('#photoNote').textContent='Photo selected';};r.readAsDataURL(f)}
-$('#uploadBtn').onclick=()=>$('#file').click(); $('#cameraBtn').onclick=()=>{$('#file').setAttribute('capture','environment');$('#file').click()}; $('#file').onchange=e=>loadFile(e.target.files[0]);
-$('#continue').onclick=()=>{if(!userPhoto){$('#file').click();return}show('#s2')};
-$$('[data-frame]').forEach(b=>b.onclick=()=>{frame=b.dataset.frame;show('#s3');$('#frameLayer').src=frames[frame];$('#zoom').value=1;scale=1;updatePhoto()});
-$('#zoom').oninput=e=>{scale=+e.target.value;updatePhoto()};
-function updatePhoto(){const img=$('#photo');img.style.transform=`scale(${scale})`; if(frame==='circle'){img.style.borderRadius='50%'}else img.style.borderRadius='0'}
-$('#reset').onclick=()=>{$('#zoom').value=1;scale=1;updatePhoto()};
-$('#build').onclick=()=>{built=true;show('#s4');renderFinal()};
-function fitCrop(ctx,img,x,y,w,h){const s=Math.max(w/img.width,h/img.height);const iw=img.width*s,ih=img.height*s;ctx.drawImage(img,x+(w-iw)/2,y+(h-ih)/2,iw,ih)}
-async function renderFinal(){
- const c=$('#canvas'),ctx=c.getContext('2d'); const template=new Image();template.src=frames[frame]; await template.decode();
- const W=template.naturalWidth,H=template.naturalHeight;c.width=W*4;c.height=H*4;ctx.scale(4,4);ctx.clearRect(0,0,W,H);
- ctx.drawImage(template,0,0,W,H);
- const boxes={arch:[60,42,W-120,H-152],portrait:[58,48,W-116,H-155],ornate:[60,48,W-120,H-155],slim:[58,48,W-116,H-155],landscape:[95,50,W-190,H-120],circle:[36,32,W-72,H-80],tall:[78,42,W-156,H-120]};
- const b=boxes[frame]||boxes.arch;
- if(userPhoto){const im=new Image();im.src=userPhoto;await im.decode();ctx.save();if(frame==='circle'){ctx.beginPath();ctx.arc(W/2,(b[1]+b[3])/2,b[2]/2,0,Math.PI*2);ctx.clip()}else{ctx.beginPath();ctx.roundRect(b[0],b[1],b[2],b[3],24);ctx.clip()}fitCrop(ctx,im,b[0],b[1],b[2],b[3]);ctx.restore()}
- ctx.drawImage(template,0,0,W,H);
- if(userPhoto){const im=new Image();im.src=userPhoto;await im.decode();ctx.save();if(frame==='circle'){ctx.beginPath();ctx.arc(W/2,(b[1]+b[3])/2,b[2]/2,0,Math.PI*2);ctx.clip()}else{ctx.beginPath();ctx.roundRect(b[0],b[1],b[2],b[3],24);ctx.clip()}fitCrop(ctx,im,b[0],b[1],b[2],b[3]);ctx.restore()}
- if(['arch','portrait','ornate','slim'].includes(frame)){
-   const name=($('#name').value||'Your Name');ctx.fillStyle='#111';ctx.textAlign='center';ctx.font='700 26px Georgia';ctx.fillText(name,W/2,H-82);ctx.font='400 15px Arial';ctx.fillText($('#role').value||'Builder',W/2,H-53);
- }
- const data=c.toDataURL('image/png');$('#finalCard').src=data;return data;
-}
-$('#download').onclick=async()=>{const data=await renderFinal();const a=document.createElement('a');a.href=data;a.download='HH-Goa-2026-Builder-ID.png';a.click()};
-$('#shareX').onclick=()=>window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(`My Hacker House Goa 2026 Builder ID is ready! #FrameInGoa`),'_blank','noopener');
-$('#share').onclick=async()=>{const data=await renderFinal();try{const res=await fetch(data);const blob=await res.blob();const f=new File([blob],'HH-Goa-2026-Builder-ID.png',{type:'image/png'});if(navigator.share&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({title:'Hacker House Goa 2026 Builder ID',files:[f]});}else{await navigator.clipboard?.writeText('My Hacker House Goa 2026 Builder ID is ready! #FrameInGoa');$('#toast').style.display='block';setTimeout(()=>$('#toast').style.display='none',1800)}}catch(e){}};
-$('#another').onclick=()=>{userPhoto=null;$('#file').value='';$('#name').value='';$('#role').value='';built=false;show('#s1')};
-</script>
-</body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Hacker House Goa 2026 — Builder ID</title><style>*{box-sizing:border-box}html,body{margin:0;background:#06180f;color:#fff;font-family:Arial,sans-serif}.app{width:100%;max-width:691px;margin:auto;overflow:hidden}.screen{display:none;position:relative;width:100%}.screen.active{display:block}.bg{display:block;width:100%;height:auto}.hit{position:absolute;border:0;background:transparent;cursor:pointer}.textInput{position:absolute;border:0;outline:0;background:transparent;color:#f3f0e7;font-size:18px;padding:0 18px}.textInput::placeholder{color:#c7c6bd}.file{display:none}.toast{position:fixed;z-index:50;left:50%;bottom:22px;transform:translateX(-50%);background:white;color:#222;padding:14px 24px;border-radius:30px;box-shadow:0 8px 30px #0005}.step3-photo{position:absolute;object-fit:cover;display:block;transform-origin:center}.step3-frame{position:absolute;pointer-events:none}.zoom{position:absolute;left:3%;right:3%;top:82%;accent-color:#ff1493}.s3btn{position:absolute;top:87%;height:5.5%;width:46%;border-radius:14px;border:3px solid #f5d500;font-size:18px;font-weight:700}.reset{left:3%;background:#073b28;color:#fff}.build{right:3%;background:#ffd516;color:#073b28;border-color:#ffd516}.final-card{position:absolute;left:14.2%;top:23.8%;width:71.6%;pointer-events:none}.final-btn{position:absolute;left:3%;right:3%;height:5.3%;border-radius:14px;border:3px solid #f5d500;font-size:18px;font-weight:700}.download{top:83.8%;background:#ffd516;color:#073b28;border-color:#ffd516}.share{top:89.4%;background:#073b28;color:#fff}.sharex{top:95%;background:#0c1110;color:#fff;border-color:#0c1110}.another{top:100.6%;background:#073b28;color:#fff}.s4wrap{padding-bottom:25%}@media(min-width:692px){.app{max-width:691px}}
+</style></head><body><main class="app">
+<section class="screen active" id="s1"><img class="bg" src="assets/step1.jpg"><button class="hit" style="left:6.5%;top:41.4%;width:42.5%;height:5.5%" id="upload"></button><button class="hit" style="left:50.5%;top:41.4%;width:42.5%;height:5.5%" id="camera"></button><input class="file" id="file" type="file" accept="image/*,.heic,.heif"><input class="textInput" id="name" style="left:6.5%;top:51.1%;width:87%;height:5.5%" placeholder="Your name"><input class="textInput" id="role" style="left:6.5%;top:60.8%;width:87%;height:5.5%" placeholder="e.g. Full-stack builder"><button class="hit" id="continue" style="left:6.5%;top:68.2%;width:87%;height:5.5%"></button></section>
+<section class="screen" id="s2"><div style="position:relative"><img class="bg" src="assets/step2.jpg"><button class="hit" data-frame="arch" style="left:2.8%;top:13.4%;width:46%;height:17.2%"></button><button class="hit" data-frame="portrait" style="left:50.8%;top:13.4%;width:46.2%;height:17.2%"></button><button class="hit" data-frame="ornate" style="left:2.8%;top:32.5%;width:46%;height:17.2%"></button><button class="hit" data-frame="slim" style="left:50.8%;top:32.5%;width:46.2%;height:17.2%"></button><button class="hit" data-frame="landscape" style="left:2.8%;top:56.8%;width:94.2%;height:16.5%"></button><button class="hit" data-frame="circle" style="left:2.8%;top:76.0%;width:46%;height:17.2%"></button><button class="hit" data-frame="tall" style="left:50.8%;top:76.0%;width:46.2%;height:17.2%"></button></div></section>
+<section class="screen" id="s3"><div style="position:relative"><img class="bg" src="assets/step3.jpg"><div id="preview"><img id="photo" class="step3-photo"><img id="frame" class="step3-frame"></div><input class="zoom" id="zoom" type="range" min="1" max="2.5" step=".01" value="1"><button class="s3btn reset" id="reset">Reset</button><button class="s3btn build" id="build">Build</button></div></section>
+<section class="screen" id="s4"><div class="s4wrap" style="position:relative"><img class="bg" src="assets/final.jpg"><img class="final-card" id="finalCard"><button class="final-btn download" id="download">↓ &nbsp; Download</button><button class="final-btn share" id="share">♧ &nbsp; Share</button><button class="final-btn sharex" id="shareX">𝕏 &nbsp; Share to X</button><button class="final-btn another" id="another">Make another</button></div></section>
+</main><canvas id="canvas" style="display:none"></canvas><script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];let photoData='',frameName='portrait',scale=1,ox=0,oy=0,drag=false,px=0,py=0;
+const frameFiles={arch:'frame-arch.png',portrait:'frame-portrait.png',ornate:'frame-ornate.png',slim:'frame-slim.png',landscape:'frame-landscape.png',circle:'frame-circle.png',tall:'frame-tall.png'};
+function show(id){$$('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');scrollTo(0,0)}
+function load(f){if(!f)return;const r=new FileReader();r.onload=()=>{photoData=r.result;};r.readAsDataURL(f)}
+$('#upload').onclick=()=>$('#file').click();$('#camera').onclick=()=>$('#file').click();$('#file').onchange=e=>load(e.target.files[0]);$('#continue').onclick=()=>{if(!photoData){$('#file').click();return}show('#s2')};
+$$('[data-frame]').forEach(b=>b.onclick=()=>{frameName=b.dataset.frame;scale=1;ox=oy=0;show('#s3');setupPreview()});
+function setupPreview(){const f=$('#frame');f.src='assets/'+frameFiles[frameName];f.onload=()=>{const w=691,h=905;f.style.left='8.55%';f.style.top='10.55%';f.style.width='83%';f.style.height='auto';if(photoData){$('#photo').src=photoData;positionPhoto()}}}
+function positionPhoto(){const p=$('#photo');let box;if(frameName==='portrait'||frameName==='arch'||frameName==='ornate'||frameName==='slim'||frameName==='tall'){box={l:15.6,t:20.7,w:50.6,h:57.5}}else if(frameName==='landscape'){box={l:20,t:18,w:60,h:54}}else{box={l:12,t:17,w:76,h:70}}p.style.left=box.l+'%';p.style.top=box.t+'%';p.style.width=box.w+'%';p.style.height=box.h+'%';p.style.transform=`translate(${ox}px,${oy}px) scale(${scale})`}
+$('#zoom').oninput=e=>{scale=+e.target.value;positionPhoto()};$('#reset').onclick=()=>{scale=1;ox=oy=0;positionPhoto()};
+const prev=$('#preview');prev.onpointerdown=e=>{drag=true;px=e.clientX;py=e.clientY;prev.setPointerCapture?.(e.pointerId)};prev.onpointermove=e=>{if(!drag)return;ox+=e.clientX-px;oy+=e.clientY-py;px=e.clientX;py=e.clientY;positionPhoto()};prev.onpointerup=()=>drag=false;prev.onpointercancel=()=>drag=false;
+async function render(){const c=$('#canvas'),ctx=c.getContext('2d'),bg=new Image();bg.src='assets/'+frameFiles[frameName];await bg.decode();const W=bg.naturalWidth,H=bg.naturalHeight;c.width=W*3;c.height=H*3;ctx.scale(3,3);ctx.drawImage(bg,0,0);if(photoData){const im=new Image();im.src=photoData;await im.decode();let box;if(frameName==='portrait'||frameName==='arch'||frameName==='ornate'||frameName==='slim'){box={x:50,y:50,w:220,h:300}}else if(frameName==='landscape'){box={x:110,y:45,w:430,h:300}}else{box={x:25,y:35,w:270,h:330}};ctx.save();if(frameName==='circle'){ctx.beginPath();ctx.arc(W/2,box.y+box.h/2,box.w/2,0,Math.PI*2);ctx.clip()}else{ctx.beginPath();ctx.roundRect(box.x,box.y,box.w,box.h,16);ctx.clip()}const s=Math.max(box.w/im.width,box.h/im.height)*scale;ctx.drawImage(im,box.x+(box.w-im.width*s)/2+ox,box.y+(box.h-im.height*s)/2+oy,im.width*s,im.height*s);ctx.restore();ctx.drawImage(bg,0,0)}if(['arch','portrait','ornate','slim'].includes(frameName)){ctx.fillStyle='#111';ctx.textAlign='center';ctx.font='700 24px Georgia';ctx.fillText($('#name').value||'Your Name',W/2,H-82);ctx.font='400 14px Arial';ctx.fillText($('#role').value||'Builder',W/2,H-53)}return c.toDataURL('image/png')}
+$('#build').onclick=async()=>{const data=await render();$('#finalCard').src=data;show('#s4')};$('#download').onclick=async()=>{const a=document.createElement('a');a.href=await render();a.download='HH-Goa-2026-Builder-ID.png';a.click()};$('#shareX').onclick=()=>window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent('My Hacker House Goa 2026 Builder ID is ready! #FrameInGoa'),'_blank');$('#share').onclick=async()=>{const data=await render();try{const blob=await (await fetch(data)).blob();const f=new File([blob],'HH-Goa-2026-Builder-ID.png',{type:'image/png'});if(navigator.share&&navigator.canShare?.({files:[f]}))await navigator.share({title:'Hacker House Goa 2026',files:[f]});else navigator.clipboard?.writeText('My Hacker House Goa 2026 Builder ID is ready! #FrameInGoa')}catch(e){}};$('#another').onclick=()=>{photoData='';$('#file').value='';$('#name').value='';$('#role').value='';show('#s1')};
+</script></body></html>
