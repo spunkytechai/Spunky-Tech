@@ -4,6 +4,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
 import { colors, spacing } from '../src/theme/colors';
+import { BottomTabs } from '../src/components/BottomTabs';
 
 type Task = { id: string; title: string; is_completed: number; priority: string };
 type Note = { id: string; title: string; updated_at: string };
@@ -57,7 +58,7 @@ export default function HomeScreen() {
       </View>
       <Text style={styles.footer}>PRIVATE BY DESIGN · WORKS OFFLINE</Text>
     </ScrollView>
-    <View style={styles.tabBar}>{[['Home','⌂','/'],['Notes','▤','/notes'],['Tasks','✓','/tasks'],['Habits','◎','/habits']].map(([label, icon, path]) => <Pressable key={label} onPress={() => path === '/' ? undefined : go(path as Href)} style={styles.tab}><Text style={[styles.tabIcon, path === '/' && styles.tabActive]}>{icon}</Text><Text style={[styles.tabLabel, path === '/' && styles.tabActive]}>{label}</Text></Pressable>)}</View>
+    <BottomTabs />
   </SafeAreaView>;
 }
 
@@ -79,6 +80,5 @@ const styles = StyleSheet.create({
   taskText: { flex: 1, color: colors.text, fontSize: 13, fontWeight: '600' }, completed: { textDecorationLine: 'line-through', color: colors.muted }, priority: { width: 7, height: 7, borderRadius: 4, backgroundColor: '#9EB9A8' }, highPriority: { backgroundColor: colors.orange },
   noteRow: { minHeight: 58, flexDirection: 'row', alignItems: 'center', gap: 12 }, noteMark: { width: 4, height: 30, borderRadius: 4, backgroundColor: colors.primary }, noteTitle: { color: colors.text, fontSize: 13, fontWeight: '700' }, noteDate: { color: colors.muted, fontSize: 11, marginTop: 4 },
   footer: { textAlign: 'center', color: colors.muted, fontSize: 9, letterSpacing: 1.3, marginTop: 30, marginBottom: 8 },
-  tabBar: { flexDirection: 'row', borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.surface, paddingTop: 10, paddingBottom: 8 },
-  tab: { flex: 1, alignItems: 'center', gap: 4 }, tabIcon: { fontSize: 19, color: colors.muted }, tabLabel: { fontSize: 10, color: colors.muted, fontWeight: '600' }, tabActive: { color: colors.primary, fontWeight: '800' }
+
 });
