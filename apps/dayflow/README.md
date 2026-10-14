@@ -7,12 +7,12 @@ An offline-first personal productivity app for Android, built with Expo, React N
 - Notes with local persistence
 - Tasks with completion state
 - Habit tracking
-- Light/dark/system theme foundation
+- A consistent light-theme interface (theme selection is not implemented yet)
 - No account, cloud sync, analytics, or ads in the initial release
 
 ## Current build status
 
-Shared bottom navigation is wired across Home, Notes, Tasks, and Habits. The latest recorded GitHub Actions run passed Expo dependency compatibility, Expo Doctor, TypeScript, and Android JavaScript export. This verifies the JavaScript bundle and project configuration; it does not verify a native APK/AAB or on-device behavior. Continue running the workflow after every app change.
+Shared bottom navigation is wired across Home, Notes, Tasks, and Habits. The CI workflow checks Expo dependency compatibility, Expo Doctor, TypeScript, lint, unit tests, and Android JavaScript export. A passing workflow verifies project configuration and the JavaScript bundle; it does not verify a native APK/AAB or on-device behavior. This verifies the JavaScript bundle and project configuration; it does not verify a native APK/AAB or on-device behavior. Continue running the workflow after every app change.
 
 ## Local development
 1. Install Node.js LTS and the Expo-compatible Android tooling.
