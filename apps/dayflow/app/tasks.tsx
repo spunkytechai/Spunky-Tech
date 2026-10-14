@@ -25,7 +25,6 @@ export default function TasksScreen() {
   const add = async () => {
     if (!title.trim()) { Alert.alert('Add a task name', 'A task needs a short title.'); return; }
     const now = new Date().toISOString();
-    const today = localDate();
     const dueAt = dueDateForChoice(dueChoice);
     try { await db.runAsync('INSERT INTO tasks(id, title, due_at, priority, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)', makeId(), title.trim(), dueAt, priority, now, now); setTitle(''); setDueChoice('none'); await load(); }
     catch { Alert.alert('Could not add task', 'Please try again.'); }
