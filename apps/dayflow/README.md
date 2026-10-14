@@ -10,6 +10,10 @@ An offline-first personal productivity app for Android, built with Expo, React N
 - Light/dark/system theme foundation
 - No account, cloud sync, analytics, or ads in the initial release
 
+## Current build status
+
+Shared bottom navigation is now wired across Home, Notes, Tasks, and Habits. A GitHub Actions workflow validates Expo dependency compatibility, TypeScript, and the Android JavaScript bundle on changes. The first run must pass before this baseline can be called build-verified.
+
 ## Local development
 1. Install Node.js LTS and the Expo-compatible Android tooling.
 2. From this directory run `npm install`.
