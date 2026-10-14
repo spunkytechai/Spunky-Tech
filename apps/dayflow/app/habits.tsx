@@ -4,10 +4,10 @@ import { Alert, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'r
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../src/theme/colors';
 import { BottomTabs } from '../src/components/BottomTabs';
+import { localDate } from '../src/utils/date';
 
 type Habit = { id: string; name: string; today_done: number; completed_days: number };
 const makeId = () => `habit-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-const localDate = (date = new Date()) => `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
 
 export default function HabitsScreen() {
   const db = useSQLiteContext();
