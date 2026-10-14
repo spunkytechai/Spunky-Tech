@@ -21,6 +21,10 @@ Shared bottom navigation is now wired across Home, Notes, Tasks, and Habits. A G
 4. Run `npm run typecheck` and `npx expo start`.
 5. Test on a physical Android device, including airplane mode and force-close/relaunch.
 
+## Android build profiles
+
+`eas.json` defines an internal preview APK and a production Android App Bundle (AAB). A cloud build still requires an Expo account, EAS project initialization, and the package ID to be confirmed. From this directory, after signing in to EAS, run `npx eas-cli build --platform android --profile preview` for a device-installable test APK, or `npx eas-cli build --platform android --profile production` for an AAB. These profiles are configuration only; no native binary has been built yet.
+
 ## Release checklist
 - Confirm the package ID is available and the Dayflow name/logo are cleared for use.
 - Add production app icon, adaptive icon, splash screen and store screenshots.
