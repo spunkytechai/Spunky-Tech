@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../src/theme/colors';
 import { BottomTabs } from '../src/components/BottomTabs';
 import { localDate } from '../src/utils/date';
+import { dueDateForChoice } from '../src/utils/taskDueDate';
 
 type Task = { id: string; title: string; due_at: string | null; priority: 'low'|'normal'|'high'; is_completed: number };
 const makeId = () => `task-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
@@ -25,7 +26,7 @@ export default function TasksScreen() {
     if (!title.trim()) { Alert.alert('Add a task name', 'A task needs a short title.'); return; }
     const now = new Date().toISOString();
     const today = localDate();
-    const dueAt = dueChoice === 'today' ? today : dueChoice === 'tomorrow' ? (() => { const date = new Date(); date.setDate(date.getDate() + 1); return localDate(date); })() : null;
+    const dueAt = dueDateForChoice(dueChoice);
     try { await db.runAsync('INSERT INTO tasks(id, title, due_at, priority, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)', makeId(), title.trim(), dueAt, priority, now, now); setTitle(''); setDueChoice('none'); await load(); }
     catch { Alert.alert('Could not add task', 'Please try again.'); }
   };
