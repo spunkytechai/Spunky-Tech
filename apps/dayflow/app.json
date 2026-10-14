@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Dayflow",
+    "slug": "dayflow",
+    "scheme": "dayflow",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": { "supportsTablet": true },
+    "android": {
+      "package": "com.spunkytech.dayflow",
+      "versionCode": 1,
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": true
+    },
+    "plugins": [
+      "expo-router",
+      ["expo-sqlite", { "enableFTS": true }],
+      "expo-notifications"
+    ],
+    "experiments": { "typedRoutes": true }
+  }
+}
