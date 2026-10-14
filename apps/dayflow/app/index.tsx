@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   logo: { width: 48, height: 48, borderRadius: 17, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }, logoText: { color: '#FFFFFF', fontSize: 30, fontWeight: '800' },
   hero: { padding: 20, backgroundColor: '#E4F2E9', borderRadius: 24, marginBottom: 24 }, heroEyebrow: { fontSize: 9, fontWeight: '800', letterSpacing: 1.2, color: colors.primary, marginBottom: 10 },
   heroTitle: { fontSize: 23, fontWeight: '800', color: colors.text }, heroBody: { color: '#425D50', fontSize: 13, lineHeight: 19, marginTop: 8, maxWidth: 290 },
-  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 24, marginBottom: 12 }, sectionTitle: { color: colors.text, fontSize: 17, fontWeight: '750', marginBottom: 12 }, link: { color: colors.primary, fontWeight: '700', fontSize: 12 },
+  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 24, marginBottom: 12 }, sectionTitle: { color: colors.text, fontSize: 17, fontWeight: '700', marginBottom: 12 }, link: { color: colors.primary, fontWeight: '700', fontSize: 12 },
   actions: { flexDirection: 'row', gap: 10 }, action: { flex: 1, backgroundColor: colors.surface, borderRadius: 16, paddingVertical: 14, alignItems: 'center', borderWidth: 1, borderColor: colors.border }, pressed: { opacity: 0.7 },
   actionIcon: { fontSize: 23, color: colors.primary, marginBottom: 8 }, actionText: { fontSize: 11, fontWeight: '700', color: colors.text },
   card: { backgroundColor: colors.surface, borderRadius: 18, borderWidth: 1, borderColor: colors.border, paddingHorizontal: 14, paddingVertical: 3 },
