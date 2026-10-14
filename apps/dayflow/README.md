@@ -12,7 +12,7 @@ An offline-first personal productivity app for Android, built with Expo, React N
 
 ## Current build status
 
-Shared bottom navigation is now wired across Home, Notes, Tasks, and Habits. A GitHub Actions workflow validates Expo dependency compatibility, TypeScript, and the Android JavaScript bundle on changes. The first run must pass before this baseline can be called build-verified.
+Shared bottom navigation is wired across Home, Notes, Tasks, and Habits. The latest recorded GitHub Actions run passed Expo dependency compatibility, Expo Doctor, TypeScript, and Android JavaScript export. This verifies the JavaScript bundle and project configuration; it does not verify a native APK/AAB or on-device behavior. Continue running the workflow after every app change.
 
 ## Local development
 1. Install Node.js LTS and the Expo-compatible Android tooling.
