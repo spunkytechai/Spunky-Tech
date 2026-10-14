@@ -36,5 +36,7 @@ jobs:
         run: npx expo-doctor
       - name: Type-check
         run: npm run typecheck
+      - name: Lint
+        run: npx expo lint
       - name: Export Android bundle
         run: npx expo export --platform android
