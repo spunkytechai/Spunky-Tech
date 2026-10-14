@@ -54,6 +54,7 @@ export default function NotesScreen() {
       <Text style={styles.section}>Your notes · {notes.length}</Text>
       <FlatList data={notes} keyExtractor={item => item.id} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: 24 }} ListEmptyComponent={<Text style={styles.empty}>No notes yet. Create one above to capture an idea.</Text>} renderItem={({ item }) => <Pressable onPress={() => open(item)} accessibilityRole="button" style={[styles.row, selected === item.id && styles.selected]}><Text numberOfLines={1} style={styles.rowTitle}>{item.title || 'Untitled note'}</Text><Text numberOfLines={2} style={styles.rowBody}>{item.body || 'No additional text'}</Text><Text style={styles.date}>{new Date(item.updated_at).toLocaleString()}</Text></Pressable>} />
     </KeyboardAvoidingView>
+    <BottomTabs />
   </SafeAreaView>;
 }
 
