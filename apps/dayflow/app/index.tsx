@@ -48,7 +48,7 @@ export default function HomeScreen() {
         <Action label="Add task" icon="✓" onPress={() => go('/tasks')} />
         <Action label="Track habit" icon="◎" onPress={() => go('/habits')} />
       </View>
-      <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>Today’s focus</Text><Pressable onPress={() => go('/tasks')}><Text style={styles.link}>See all</Text></Pressable></View>
+      <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>Your tasks</Text><Pressable onPress={() => go('/tasks')}><Text style={styles.link}>See all</Text></Pressable></View>
       <View style={styles.card}>
         {tasks.length === 0 ? <Text style={styles.empty}>Your task list is clear. Add a task when something needs your attention.</Text> : tasks.map((task, i) => <Pressable accessibilityRole="button" accessibilityLabel={task.is_completed ? 'Reopen task ' + task.title : 'Complete task ' + task.title} onPress={() => openTask(task)} key={task.id} style={[styles.taskRow, i > 0 && styles.rowBorder]}><Text style={[styles.check, task.is_completed === 1 && styles.checked]}>{task.is_completed ? '✓' : ''}</Text><Text style={[styles.taskText, task.is_completed === 1 && styles.completed]}>{task.title}</Text><View style={[styles.priority, task.priority === 'high' && styles.highPriority]} /></Pressable>)}
       </View>
