@@ -32,6 +32,8 @@ jobs:
         run: npm install
       - name: Check Expo dependency compatibility
         run: npx expo install --check
+      - name: Inspect Expo project configuration
+        run: npx expo-doctor
       - name: Type-check
         run: npm run typecheck
       - name: Export Android bundle
