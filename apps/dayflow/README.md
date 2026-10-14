@@ -12,7 +12,7 @@ An offline-first personal productivity app for Android, built with Expo, React N
 
 ## Current build status
 
-Shared bottom navigation is wired across Home, Notes, Tasks, and Habits. The CI workflow checks Expo dependency compatibility, Expo Doctor, TypeScript, lint, unit tests, and Android JavaScript export. A passing workflow verifies project configuration and the JavaScript bundle; it does not verify a native APK/AAB or on-device behavior. Continue running the workflow after every app change.
+Shared bottom navigation is wired across Home, Notes, Tasks, and Habits. The CI workflow checks Expo dependency compatibility, Expo Doctor, TypeScript, lint, unit tests, and Android JavaScript export. It also generates a native Android project, builds a debug APK, and uploads it as the `dayflow-android-debug-apk` workflow artifact when that job succeeds. A debug APK is for installation/testing only; it is not a signed Play Store release AAB and does not replace physical-device QA.
 
 ## Local development
 1. Install Node.js LTS and the Expo-compatible Android tooling.
@@ -23,7 +23,7 @@ Shared bottom navigation is wired across Home, Notes, Tasks, and Habits. The CI 
 
 ## Android build profiles
 
-`eas.json` defines an internal preview APK and a production Android App Bundle (AAB). A cloud build still requires an Expo account, EAS project initialization, and the package ID to be confirmed. From this directory, after signing in to EAS, run `npx eas-cli build --platform android --profile preview` for a device-installable test APK, or `npx eas-cli build --platform android --profile production` for an AAB. These profiles are configuration only; no native binary has been built yet.
+`eas.json` defines an internal preview APK and a production Android App Bundle (AAB). A cloud build still requires an Expo account, EAS project initialization, and the package ID to be confirmed. From this directory, after signing in to EAS, run `npx eas-cli build --platform android --profile preview` for a device-installable test APK, or `npx eas-cli build --platform android --profile production` for an AAB. The EAS profiles are configuration only until an EAS build is run. CI is configured to build a separate debug APK without EAS credentials; the release AAB still requires an authenticated EAS or local signed build.
 
 ## Release checklist
 - Confirm the package ID is available and the Dayflow name/logo are cleared for use.
