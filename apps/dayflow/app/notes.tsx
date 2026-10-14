@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Alert, FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../src/theme/colors';
+import { BottomTabs } from '../src/components/BottomTabs';
 
 type Note = { id: string; title: string; body: string; updated_at: string };
 const makeId = () => `note-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
