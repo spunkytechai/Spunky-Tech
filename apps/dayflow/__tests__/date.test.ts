@@ -13,7 +13,7 @@ describe('localDate', () => {
 });
 
 
-import { dueDateForChoice } from '../src/utils/taskDueDate';
+import { dueDateForChoice, taskDueLabel } from '../src/utils/taskDueDate';
 
 describe('dueDateForChoice', () => {
   const now = new Date(2026, 9, 15, 23, 30);
@@ -29,5 +29,21 @@ describe('dueDateForChoice', () => {
   it('advances across month boundaries for tomorrow', () => {
     expect(dueDateForChoice('tomorrow', now)).toBe('2026-10-16');
     expect(dueDateForChoice('tomorrow', new Date(2026, 11, 31, 23, 30))).toBe('2027-01-01');
+  });
+});
+
+
+describe('taskDueLabel', () => {
+  const now = new Date(2026, 9, 15, 12, 0);
+
+  it('labels today and tomorrow clearly', () => {
+    expect(taskDueLabel('2026-10-15', now)).toBe('TODAY');
+    expect(taskDueLabel('2026-10-16', now)).toBe('TOMORROW');
+  });
+
+  it('marks past dates as overdue and preserves future dates', () => {
+    expect(taskDueLabel('2026-10-14', now)).toBe('OVERDUE · 2026-10-14');
+    expect(taskDueLabel('2026-10-20', now)).toBe('2026-10-20');
+    expect(taskDueLabel(null, now)).toBeNull();
   });
 });
