@@ -38,5 +38,7 @@ jobs:
         run: npm run typecheck
       - name: Lint
         run: npx expo lint
+      - name: Unit tests
+        run: npm test
       - name: Export Android bundle
         run: npx expo export --platform android
