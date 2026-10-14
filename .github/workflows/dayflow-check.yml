@@ -45,6 +45,7 @@ jobs:
 
 
   android-debug-apk:
+    if: github.event_name == 'push'
     needs: validate
     runs-on: ubuntu-latest
     defaults:
