@@ -86,23 +86,37 @@ jobs:
       - name: Sign test APK and verify bundle and permissions
         working-directory: apps/dayflow
         run: |
-          unsigned_apk="android/app/build/outputs/apk/release/app-release-unsigned.apk"
-          apk="android/app/build/outputs/apk/release/dayflow-arm64.apk"
-          test -s "$unsigned_apk"
-          unzip -l "$unsigned_apk" | tee /tmp/dayflow-apk-files.txt
-          if ! grep -E 'assets/index\.android\.bundle|assets/index\.android\.bundle\.hbc' /tmp/dayflow-apk-files.txt; then
+          release_dir="android/app/build/outputs/apk/release"
+          apk="$release_dir/dayflow-arm64.apk"
+          unsigned_apk="$release_dir/app-release-unsigned.apk"
+          signed_apk="$release_dir/app-release.apk"
+
+          # Expo/Gradle may produce an unsigned or already-signed APK.
+          if [ -s "$unsigned_apk" ]; then
+            source_apk="$unsigned_apk"
+          elif [ -s "$signed_apk" ]; then
+            source_apk="$signed_apk"
+          else
+            echo "No release APK found. Contents of release output directory:"
+            find "$release_dir" -maxdepth 2 -type f -ls || true
+            exit 1
+          fi
+
+          unzip -l "$source_apk" | tee /tmp/dayflow-apk-files.txt
+          if ! grep -E 'assets/index\\.android\\.bundle(\\.hbc)?' /tmp/dayflow-apk-files.txt; then
             echo "Standalone JavaScript bundle is missing from the release APK."
             exit 1
           fi
+
           mkdir -p "$HOME/.android"
           keytool -genkeypair -keystore "$HOME/.android/dayflow-test.keystore" -storepass dayflowtest -keypass dayflowtest -alias dayflowtest -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Dayflow Local Test, OU=Spunky Tech, O=Spunky Tech, L=New Delhi, ST=Delhi, C=IN"
           apksigner="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
           aapt="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -n 1)"
           test -x "$apksigner" && test -x "$aapt"
-          "$apksigner" sign --ks "$HOME/.android/dayflow-test.keystore" --ks-pass pass:dayflowtest --key-pass pass:dayflowtest --out "$apk" "$unsigned_apk"
+          "$apksigner" sign --ks "$HOME/.android/dayflow-test.keystore" --ks-pass pass:dayflowtest --key-pass pass:dayflowtest --out "$apk" "$source_apk"
           "$apksigner" verify "$apk"
           "$aapt" dump permissions "$apk" | tee /tmp/dayflow-apk-permissions.txt
-          if grep -E 'android\.permission\.(READ|WRITE)_EXTERNAL_STORAGE' /tmp/dayflow-apk-permissions.txt; then
+          if grep -E 'android\\.permission\\.(READ|WRITE)_EXTERNAL_STORAGE' /tmp/dayflow-apk-permissions.txt; then
             echo "Final APK requests a legacy external storage permission."
             exit 1
           fi
