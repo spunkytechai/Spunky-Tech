@@ -4,7 +4,6 @@ import { Alert, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'r
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../src/theme/colors';
 import { BottomTabs } from '../src/components/BottomTabs';
-import { localDate } from '../src/utils/date';
 import { dueDateForChoice, taskDueLabel } from '../src/utils/taskDueDate';
 
 type Task = { id: string; title: string; due_at: string | null; priority: 'low'|'normal'|'high'; is_completed: number };
