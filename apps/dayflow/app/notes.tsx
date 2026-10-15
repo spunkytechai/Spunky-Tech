@@ -24,8 +24,32 @@ export default function NotesScreen() {
   }, [db, query]);
   useFocusEffect(useCallback(() => { load().catch(() => Alert.alert('Unable to load notes', 'Please try again.')); }, [load]));
 
-  const open = (note: Note) => { setSelected(note.id); setTitle(note.title); setBody(note.body); };
-  const fresh = () => { setSelected(null); setTitle(''); setBody(''); };
+  const hasUnsavedChanges = () => {
+    if (!selected) return Boolean(title.trim() || body.trim());
+    const saved = notes.find(note => note.id === selected);
+    return saved ? title !== saved.title || body !== saved.body : Boolean(title.trim() || body.trim());
+  };
+  const open = (note: Note) => {
+    if (note.id === selected) return;
+    if (hasUnsavedChanges()) {
+      Alert.alert('Discard unsaved changes?', 'Your edits have not been saved yet.', [
+        { text: 'Keep editing', style: 'cancel' },
+        { text: 'Discard', style: 'destructive', onPress: () => { setSelected(note.id); setTitle(note.title); setBody(note.body); } },
+      ]);
+      return;
+    }
+    setSelected(note.id); setTitle(note.title); setBody(note.body);
+  };
+  const fresh = () => {
+    if (hasUnsavedChanges()) {
+      Alert.alert('Discard unsaved changes?', 'Your edits have not been saved yet.', [
+        { text: 'Keep editing', style: 'cancel' },
+        { text: 'Discard', style: 'destructive', onPress: () => { setSelected(null); setTitle(''); setBody(''); } },
+      ]);
+      return;
+    }
+    setSelected(null); setTitle(''); setBody('');
+  };
   const save = async () => {
     if (!title.trim() && !body.trim()) { Alert.alert('Nothing to save', 'Add a title or some text first.'); return; }
     setSaving(true);
