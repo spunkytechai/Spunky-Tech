@@ -74,6 +74,12 @@ jobs:
         run: npm install
       - name: Generate native Android project
         run: npx expo prebuild --platform android --non-interactive
+      - name: Verify legacy storage permissions are absent
+        run: |
+          if grep -E 'android.permission.(READ|WRITE)_EXTERNAL_STORAGE' android/app/src/main/AndroidManifest.xml; then
+            echo "Legacy external storage permissions unexpectedly present in generated manifest."
+            exit 1
+          fi
       - name: Build arm64 debug APK
         working-directory: apps/dayflow/android
         run: ./gradlew assembleDebug -PreactNativeArchitectures=arm64-v8a --no-daemon --stacktrace --console=plain
