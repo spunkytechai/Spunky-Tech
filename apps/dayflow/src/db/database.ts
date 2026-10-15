@@ -10,6 +10,12 @@ export async function initializeDatabase(db: SQLiteDatabase): Promise<void> {
         key TEXT PRIMARY KEY NOT NULL,
         value TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS user_profile (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        nickname TEXT NOT NULL DEFAULT '',
+        updated_at TEXT NOT NULL
+      );
+      INSERT OR IGNORE INTO user_profile(id, nickname, updated_at) VALUES (1, '', CURRENT_TIMESTAMP);
       CREATE TABLE IF NOT EXISTS notes (
         id TEXT PRIMARY KEY NOT NULL,
         title TEXT NOT NULL DEFAULT '',
