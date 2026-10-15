@@ -27,16 +27,19 @@ export default function HomeScreen() {
   const [focusText, setFocusText] = useState('');
   const [focusDraft, setFocusDraft] = useState('');
   const [editingFocus, setEditingFocus] = useState(false);
+  const [showDailyFocus, setShowDailyFocus] = useState(true);
 
   const load = useCallback(async () => {
     const taskRows = await db.getAllAsync<Task>('SELECT id, title, is_completed, priority FROM tasks ORDER BY is_completed ASC, due_at IS NULL, due_at ASC LIMIT 5');
     const noteRows = await db.getAllAsync<Note>('SELECT id, title, updated_at FROM notes ORDER BY is_pinned DESC, updated_at DESC LIMIT 3');
     const profile = await db.getFirstAsync<{ nickname: string }>('SELECT nickname FROM user_profile WHERE id = 1');
     const focus = await db.getFirstAsync<{ focus_text: string }>('SELECT focus_text FROM daily_focus WHERE local_date = ?', localDate());
+    const focusSetting = await db.getFirstAsync<{ value: string }>("SELECT value FROM app_settings WHERE key = 'show_daily_focus'");
     const taskCount = await db.getFirstAsync<{ count: number }>('SELECT COUNT(*) AS count FROM tasks WHERE is_completed = 0');
     const noteCount = await db.getFirstAsync<{ count: number }>('SELECT COUNT(*) AS count FROM notes');
     const habitStats = await db.getFirstAsync<{ total: number; done: number }>(`SELECT COUNT(*) AS total, COALESCE(SUM(CASE WHEN EXISTS (SELECT 1 FROM habit_entries e WHERE e.habit_id = h.id AND e.local_date = ?) THEN 1 ELSE 0 END), 0) AS done FROM habits h WHERE h.is_archived = 0`, localDate());
     setTasks(taskRows); setNotes(noteRows); setNickname(profile?.nickname ?? '');
+    setShowDailyFocus(focusSetting?.value !== '0');
     setFocusText(focus?.focus_text ?? '');
     setFocusDraft(focus?.focus_text ?? '');
     setStats({ openTasks: taskCount?.count ?? 0, noteCount: noteCount?.count ?? 0, habitsDone: habitStats?.done ?? 0, habitsTotal: habitStats?.total ?? 0 });
@@ -64,7 +67,7 @@ export default function HomeScreen() {
     <ScrollView contentContainerStyle={styles.content}>
       <View style={styles.header}>
         <View style={{ flex: 1 }}><Text style={styles.eyebrow}>YOUR PERSONAL WORKSPACE</Text><Text style={styles.title}>{greeting}{nickname ? ', ' + nickname : ''}.</Text><Text style={styles.subtitle}>Make space for what matters.</Text></View>
-        <Pressable accessibilityRole="button" accessibilityLabel="Open your profile" onPress={() => go('/profile')} style={styles.logo}><Text style={styles.logoText}>{(nickname.trim()[0] || 'd').toUpperCase()}</Text></Pressable>
+        <View style={styles.headerActions}><Pressable accessibilityRole="button" accessibilityLabel="Open settings" onPress={() => go('/settings')} style={styles.settingsButton}><Text style={styles.settingsButtonText}>⚙</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel="Open your profile" onPress={() => go('/profile')} style={styles.logo}><Text style={styles.logoText}>{(nickname.trim()[0] || 'd').toUpperCase()}</Text></Pressable></View>
       </View>
       <View style={styles.hero}><Text style={styles.heroEyebrow}>A LITTLE PROGRESS, EVERY DAY</Text><Text style={styles.heroTitle}>Your day, in balance.</Text><Text style={styles.heroBody}>Capture a thought, finish a task, or keep a promise to yourself.</Text></View>
       <View style={styles.statsRow}>
@@ -72,10 +75,10 @@ export default function HomeScreen() {
         <Pressable onPress={() => go('/habits')} style={[styles.statCard, styles.statGreen]}><Text style={styles.statIcon}>♡</Text><Text style={styles.statValue}>{stats.habitsDone}/{stats.habitsTotal}</Text><Text style={styles.statLabel}>Habits today</Text></Pressable>
         <Pressable onPress={() => go('/notes')} style={[styles.statCard, styles.statAmber]}><Text style={styles.statIcon}>▤</Text><Text style={styles.statValue}>{stats.noteCount}</Text><Text style={styles.statLabel}>Notes saved</Text></Pressable>
       </View>
-      <View style={styles.contentCard}>
+      {showDailyFocus && <View style={styles.contentCard}>
         <View style={styles.focusHeader}><View style={styles.contentTag}><Text style={styles.contentTagText}>TODAY&apos;S FOCUS</Text></View><Pressable onPress={() => { setFocusDraft(focusText); setEditingFocus(!editingFocus); }} accessibilityRole="button"><Text style={styles.editLink}>{editingFocus ? 'Cancel' : focusText ? 'Edit' : '+ Add focus'}</Text></Pressable></View>
         {editingFocus ? <><TextInput value={focusDraft} onChangeText={setFocusDraft} placeholder="What matters most today?" placeholderTextColor={colors.muted} maxLength={140} multiline style={styles.focusInput} accessibilityLabel="Today's focus" /><View style={styles.focusFooter}><Text style={styles.focusCount}>{focusDraft.length}/140</Text><Pressable onPress={saveFocus} accessibilityRole="button" style={styles.focusSave}><Text style={styles.focusSaveText}>Save focus</Text></Pressable></View></> : <><Text style={styles.contentTitle}>{focusText || 'Small steps still move you forward.'}</Text><Text style={styles.contentBody}>{focusText ? 'Keep this priority close as you move through your day.' : 'Choose one thing that matters today. Give it your attention, then build from there.'}</Text></>}
-      </View>
+      </View>}
       <Text style={styles.sectionTitle}>Quick capture</Text>
       <View style={styles.actions}>
         <Action label="New note" icon="▤" onPress={() => go('/notes')} />
