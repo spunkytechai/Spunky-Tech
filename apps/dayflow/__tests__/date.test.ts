@@ -1,4 +1,6 @@
 import { localDate } from '../src/utils/date';
+import { dueDateForChoice, taskDueLabel } from '../src/utils/taskDueDate';
+
 
 describe('localDate', () => {
   it('formats a local calendar date with zero-padded month and day', () => {
@@ -12,8 +14,6 @@ describe('localDate', () => {
   });
 });
 
-
-import { dueDateForChoice, taskDueLabel } from '../src/utils/taskDueDate';
 
 describe('dueDateForChoice', () => {
   const now = new Date(2026, 9, 15, 23, 30);
