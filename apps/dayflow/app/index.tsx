@@ -102,6 +102,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background }, content: { padding: spacing.lg, paddingBottom: 28 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 22 },
+  headerActions: { flexDirection: 'row', alignItems: 'center', gap: 8 }, settingsButton: { width: 42, height: 42, borderRadius: 15, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' }, settingsButtonText: { fontSize: 19, color: colors.text },
   eyebrow: { fontSize: 10, fontWeight: '700', letterSpacing: 1.4, color: colors.primary, marginBottom: 7 },
   title: { fontSize: 30, fontWeight: '800', color: colors.text, letterSpacing: -0.8 }, subtitle: { color: colors.muted, marginTop: 3, fontSize: 14 },
   logo: { width: 48, height: 48, borderRadius: 17, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }, logoText: { color: '#FFFFFF', fontSize: 30, fontWeight: '800' },
