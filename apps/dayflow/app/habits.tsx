@@ -1,5 +1,6 @@
 import { useSQLiteContext } from 'expo-sqlite';
 import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 import { Alert, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../src/theme/colors';
@@ -21,7 +22,7 @@ export default function HabitsScreen() {
       FROM habits h WHERE h.is_archived = 0 ORDER BY h.created_at ASC`, today);
     setHabits(rows);
   }, [db]);
-  useEffect(() => { load().catch(() => Alert.alert('Unable to load habits', 'Please try again.')); }, [load]);
+  useFocusEffect(useCallback(() => { load().catch(() => Alert.alert('Unable to load habits', 'Please try again.')); }, [load]));
   const add = async () => {
     if (!name.trim()) { Alert.alert('Name your habit', 'Use a short, clear habit name.'); return; }
     const now = new Date().toISOString();
