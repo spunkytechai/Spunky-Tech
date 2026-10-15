@@ -16,6 +16,11 @@ export async function initializeDatabase(db: SQLiteDatabase): Promise<void> {
         updated_at TEXT NOT NULL
       );
       INSERT OR IGNORE INTO user_profile(id, nickname, updated_at) VALUES (1, '', CURRENT_TIMESTAMP);
+      CREATE TABLE IF NOT EXISTS daily_focus (
+        local_date TEXT PRIMARY KEY NOT NULL,
+        focus_text TEXT NOT NULL DEFAULT '',
+        updated_at TEXT NOT NULL
+      );
       CREATE TABLE IF NOT EXISTS notes (
         id TEXT PRIMARY KEY NOT NULL,
         title TEXT NOT NULL DEFAULT '',
