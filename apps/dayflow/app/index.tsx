@@ -23,14 +23,16 @@ export default function HomeScreen() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [notes, setNotes] = useState<Note[]>([]);
   const [stats, setStats] = useState<DailyStats>({ openTasks: 0, noteCount: 0, habitsDone: 0, habitsTotal: 0 });
+  const [nickname, setNickname] = useState('');
 
   const load = useCallback(async () => {
     const taskRows = await db.getAllAsync<Task>('SELECT id, title, is_completed, priority FROM tasks ORDER BY is_completed ASC, due_at IS NULL, due_at ASC LIMIT 5');
     const noteRows = await db.getAllAsync<Note>('SELECT id, title, updated_at FROM notes ORDER BY is_pinned DESC, updated_at DESC LIMIT 3');
+    const profile = await db.getFirstAsync<{ nickname: string }>('SELECT nickname FROM user_profile WHERE id = 1');
     const taskCount = await db.getFirstAsync<{ count: number }>('SELECT COUNT(*) AS count FROM tasks WHERE is_completed = 0');
     const noteCount = await db.getFirstAsync<{ count: number }>('SELECT COUNT(*) AS count FROM notes');
     const habitStats = await db.getFirstAsync<{ total: number; done: number }>(`SELECT COUNT(*) AS total, COALESCE(SUM(CASE WHEN EXISTS (SELECT 1 FROM habit_entries e WHERE e.habit_id = h.id AND e.local_date = ?) THEN 1 ELSE 0 END), 0) AS done FROM habits h WHERE h.is_archived = 0`, localDate());
-    setTasks(taskRows); setNotes(noteRows);
+    setTasks(taskRows); setNotes(noteRows); setNickname(profile?.nickname ?? '');
     setStats({ openTasks: taskCount?.count ?? 0, noteCount: noteCount?.count ?? 0, habitsDone: habitStats?.done ?? 0, habitsTotal: habitStats?.total ?? 0 });
   }, [db]);
 
@@ -47,8 +49,8 @@ export default function HomeScreen() {
   return <SafeAreaView style={styles.safe}>
     <ScrollView contentContainerStyle={styles.content}>
       <View style={styles.header}>
-        <View><Text style={styles.eyebrow}>YOUR PERSONAL WORKSPACE</Text><Text style={styles.title}>{greeting}.</Text><Text style={styles.subtitle}>Make space for what matters.</Text></View>
-        <View style={styles.logo}><Text style={styles.logoText}>d</Text></View>
+        <View style={{ flex: 1 }}><Text style={styles.eyebrow}>YOUR PERSONAL WORKSPACE</Text><Text style={styles.title}>{greeting}{nickname ? ', ' + nickname : ''}.</Text><Text style={styles.subtitle}>Make space for what matters.</Text></View>
+        <Pressable accessibilityRole="button" accessibilityLabel="Open your profile" onPress={() => go('/profile')} style={styles.logo}><Text style={styles.logoText}>{(nickname.trim()[0] || 'd').toUpperCase()}</Text></Pressable>
       </View>
       <View style={styles.hero}><Text style={styles.heroEyebrow}>A LITTLE PROGRESS, EVERY DAY</Text><Text style={styles.heroTitle}>Your day, in balance.</Text><Text style={styles.heroBody}>Capture a thought, finish a task, or keep a promise to yourself.</Text></View>
       <View style={styles.statsRow}>
@@ -56,6 +58,7 @@ export default function HomeScreen() {
         <Pressable onPress={() => go('/habits')} style={[styles.statCard, styles.statGreen]}><Text style={styles.statIcon}>♡</Text><Text style={styles.statValue}>{stats.habitsDone}/{stats.habitsTotal}</Text><Text style={styles.statLabel}>Habits today</Text></Pressable>
         <Pressable onPress={() => go('/notes')} style={[styles.statCard, styles.statAmber]}><Text style={styles.statIcon}>▤</Text><Text style={styles.statValue}>{stats.noteCount}</Text><Text style={styles.statLabel}>Notes saved</Text></Pressable>
       </View>
+      <View style={styles.contentCard}><View style={styles.contentTag}><Text style={styles.contentTagText}>TODAY'S REMINDER</Text></View><Text style={styles.contentTitle}>Small steps still move you forward.</Text><Text style={styles.contentBody}>Choose one thing that matters today. Give it your attention, then build from there.</Text></View>
       <Text style={styles.sectionTitle}>Quick capture</Text>
       <View style={styles.actions}>
         <Action label="New note" icon="▤" onPress={() => go('/notes')} />
@@ -85,6 +88,7 @@ const styles = StyleSheet.create({
   hero: { padding: 20, backgroundColor: '#E4F2E9', borderRadius: 24, marginBottom: 24 }, heroEyebrow: { fontSize: 9, fontWeight: '800', letterSpacing: 1.2, color: colors.primary, marginBottom: 10 },
   heroTitle: { fontSize: 23, fontWeight: '800', color: colors.text }, heroBody: { color: '#425D50', fontSize: 13, lineHeight: 19, marginTop: 8, maxWidth: 290 },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 24, marginBottom: 12 }, sectionTitle: { color: colors.text, fontSize: 17, fontWeight: '700', marginBottom: 12 }, link: { color: colors.primary, fontWeight: '700', fontSize: 12 },
+  contentCard: { backgroundColor: '#EEEDFF', borderRadius: 20, padding: 18, marginBottom: 22, borderWidth: 1, borderColor: '#E1DFFF' }, contentTag: { alignSelf: 'flex-start', backgroundColor: '#FFFFFF', borderRadius: 12, paddingVertical: 5, paddingHorizontal: 9, marginBottom: 10 }, contentTagText: { color: colors.primary, fontSize: 9, fontWeight: '800', letterSpacing: 1 }, contentTitle: { color: colors.text, fontSize: 17, fontWeight: '800' }, contentBody: { color: colors.muted, fontSize: 12, lineHeight: 18, marginTop: 6 },
   statsRow: { flexDirection: 'row', gap: 9, marginBottom: 24 }, statCard: { flex: 1, minHeight: 104, borderRadius: 18, padding: 12, justifyContent: 'center' }, statBlue: { backgroundColor: '#EEF2FF' }, statGreen: { backgroundColor: '#EAF8F0' }, statAmber: { backgroundColor: '#FFF5E5' }, statIcon: { fontSize: 16, color: colors.primary, marginBottom: 5 }, statValue: { color: colors.text, fontSize: 22, fontWeight: '800', letterSpacing: -0.5 }, statLabel: { color: colors.muted, fontSize: 10, marginTop: 3, fontWeight: '600' },
   actions: { flexDirection: 'row', gap: 10 }, action: { flex: 1, backgroundColor: colors.surface, borderRadius: 16, paddingVertical: 14, alignItems: 'center', borderWidth: 1, borderColor: colors.border }, pressed: { opacity: 0.7 },
   actionIcon: { fontSize: 23, color: colors.primary, marginBottom: 8 }, actionText: { fontSize: 11, fontWeight: '700', color: colors.text },
