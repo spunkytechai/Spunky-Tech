@@ -75,7 +75,7 @@ jobs:
       - name: Verify legacy storage permissions are blocked
         run: |
           manifest="android/app/src/main/AndroidManifest.xml"
-          if grep -E 'android\.permission\.(READ|WRITE)_EXTERNAL_STORAGE' "$manifest" | grep -v 'tools:node="remove"'; then
+          if grep -E 'android[.]permission[.](READ|WRITE)_EXTERNAL_STORAGE' "$manifest" | grep -v 'tools:node="remove"'; then
             echo "A legacy external storage permission is still declared without a removal directive."
             exit 1
           fi
@@ -102,8 +102,8 @@ jobs:
             exit 1
           fi
 
-          unzip -l "$source_apk" | tee /tmp/dayflow-apk-files.txt
-          if ! grep -E 'assets/index\\.android\\.bundle(\\.hbc)?' /tmp/dayflow-apk-files.txt; then
+          unzip -Z1 "$source_apk" | tee /tmp/dayflow-apk-files.txt
+          if ! grep -E '^assets/index[.]android[.]bundle([.]hbc)?$' /tmp/dayflow-apk-files.txt; then
             echo "Standalone JavaScript bundle is missing from the release APK."
             exit 1
           fi
@@ -116,7 +116,7 @@ jobs:
           "$apksigner" sign --ks "$HOME/.android/dayflow-test.keystore" --ks-pass pass:dayflowtest --key-pass pass:dayflowtest --out "$apk" "$source_apk"
           "$apksigner" verify "$apk"
           "$aapt" dump permissions "$apk" | tee /tmp/dayflow-apk-permissions.txt
-          if grep -E 'android\\.permission\\.(READ|WRITE)_EXTERNAL_STORAGE' /tmp/dayflow-apk-permissions.txt; then
+          if grep -E 'android[.]permission[.](READ|WRITE)_EXTERNAL_STORAGE' /tmp/dayflow-apk-permissions.txt; then
             echo "Final APK requests a legacy external storage permission."
             exit 1
           fi
