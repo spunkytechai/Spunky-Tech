@@ -80,9 +80,24 @@ jobs:
             exit 1
           fi
           echo "Legacy external storage permissions are configured for removal by the manifest merger."
+      - name: Enable JavaScript bundling in the debug variant
+        run: |
+          build_file="android/app/build.gradle"
+          test -f "$build_file"
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("android/app/build.gradle")
+          source = path.read_text()
+          old = 'debuggableVariants = ["debug"]'
+          if old not in source:
+              raise SystemExit("Expected React Native debuggableVariants setting was not found; inspect the generated Gradle file before building.")
+          path.write_text(source.replace(old, 'debuggableVariants = []', 1))
+          print("Debug variant configured to bundle JavaScript instead of requiring Metro.")
+          PY
+          grep -n 'debuggableVariants = \[\]' "$build_file"
       - name: Build standalone arm64 debug APK with embedded JavaScript
         working-directory: apps/dayflow/android
-        run: ./gradlew assembleDebug -PbundleInDebug=true -PreactNativeArchitectures=arm64-v8a --no-daemon --stacktrace --console=plain
+        run: ./gradlew assembleDebug -PreactNativeArchitectures=arm64-v8a --no-daemon --stacktrace --console=plain
       - name: Verify APK bundle and permissions
         working-directory: apps/dayflow
         run: |
