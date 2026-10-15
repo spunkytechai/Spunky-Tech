@@ -86,12 +86,18 @@ jobs:
           test -f "$build_file"
           python - <<'PY'
           from pathlib import Path
+          import re
           path = Path("android/app/build.gradle")
           source = path.read_text()
-          old = 'debuggableVariants = ["debug"]'
-          if old not in source:
-              raise SystemExit("Expected React Native debuggableVariants setting was not found; inspect the generated Gradle file before building.")
-          path.write_text(source.replace(old, 'debuggableVariants = []', 1))
+          pattern = r'debuggableVariants\s*=\s*\[[^\]]*\]'
+          updated, count = re.subn(pattern, 'debuggableVariants = []', source, count=1)
+          if count != 1:
+              print("React Native Gradle configuration excerpt:")
+              for line in source.splitlines():
+                  if "debuggableVariants" in line or "react" in line.lower():
+                      print(line)
+              raise SystemExit("Could not safely locate the debuggableVariants setting.")
+          path.write_text(updated)
           print("Debug variant configured to bundle JavaScript instead of requiring Metro.")
           PY
           grep -n 'debuggableVariants = \[\]' "$build_file"
