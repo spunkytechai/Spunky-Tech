@@ -74,16 +74,18 @@ jobs:
         run: npm install
       - name: Generate native Android project
         run: npx expo prebuild --platform android --non-interactive
-      - name: Build debug APK
+      - name: Build arm64 debug APK
         working-directory: apps/dayflow/android
-        run: ./gradlew assembleDebug --no-daemon --stacktrace --console=plain
+        run: ./gradlew assembleDebug -PreactNativeArchitectures=arm64-v8a --no-daemon --stacktrace --console=plain
       - name: Verify APK output
         working-directory: apps/dayflow
-        run: test -s android/app/build/outputs/apk/debug/app-debug.apk
-      - name: Upload installable debug APK
+        run: |
+          test -s android/app/build/outputs/apk/debug/app-debug.apk
+          ls -lh android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Upload installable arm64 debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: dayflow-android-debug-apk
+          name: dayflow-android-arm64-debug-apk
           path: apps/dayflow/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
