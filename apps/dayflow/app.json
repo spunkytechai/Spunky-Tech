@@ -24,20 +24,10 @@
           "enableFTS": true
         }
       ],
-      "expo-notifications",
-      [
-        "expo-splash-screen",
-        {
-          "backgroundColor": "#F7F5FF",
-          "dark": {
-            "backgroundColor": "#F7F5FF"
-          }
-        }
-      ]
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true
-    },
-    "backgroundColor": "#F7F5FF"
+    }
   }
 }
