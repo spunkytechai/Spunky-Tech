@@ -12,6 +12,7 @@ export default function RootLayout() {
         <Stack.Screen name="notes" />
         <Stack.Screen name="tasks" />
         <Stack.Screen name="habits" />
+        <Stack.Screen name="profile" />
       </Stack>
     </SQLiteProvider>
   );
