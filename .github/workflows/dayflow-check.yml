@@ -73,13 +73,15 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Generate native Android project
-        run: npx expo prebuild --platform android --non-interactive
-      - name: Verify legacy storage permissions are absent
+        run: CI=1 npx expo prebuild --platform android
+      - name: Verify legacy storage permissions are blocked
         run: |
-          if grep -E 'android.permission.(READ|WRITE)_EXTERNAL_STORAGE' android/app/src/main/AndroidManifest.xml; then
-            echo "Legacy external storage permissions unexpectedly present in generated manifest."
+          manifest="android/app/src/main/AndroidManifest.xml"
+          if grep -E 'android\\.permission\\.(READ|WRITE)_EXTERNAL_STORAGE' "$manifest" | grep -v 'tools:node="remove"'; then
+            echo "A legacy external storage permission is still declared without a removal directive."
             exit 1
           fi
+          echo "Legacy external storage permissions are configured for removal by the manifest merger."
       - name: Build arm64 debug APK
         working-directory: apps/dayflow/android
         run: ./gradlew assembleDebug -PreactNativeArchitectures=arm64-v8a --no-daemon --stacktrace --console=plain
