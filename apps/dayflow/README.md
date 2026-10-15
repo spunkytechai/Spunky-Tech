@@ -3,16 +3,17 @@
 An offline-first personal productivity app for Android, built with Expo, React Native, TypeScript and SQLite.
 
 ## MVP
-- Home dashboard
-- Notes with local persistence
-- Tasks with completion state
-- Habit tracking
+- Home dashboard with editable daily focus and local summary stats
+- Notes with search, pinning, editing, and a warning before discarding unsaved changes
+- Tasks with completion state, priority, due-date choices, and filters
+- Habit tracking with daily check-ins and archive support
+- Local profile nickname and workspace settings (daily-focus visibility and week-start preference)
 - A consistent light-theme interface (theme selection is not implemented yet)
 - No account, cloud sync, analytics, or ads in the initial release
 
 ## Current build status
 
-Shared bottom navigation is wired across Home, Notes, Tasks, and Habits. The CI workflow checks Expo dependency compatibility, Expo Doctor, TypeScript, lint, unit tests, and Android JavaScript export. It also generates a native Android project, builds a debug APK, and uploads it as the `dayflow-android-debug-apk` workflow artifact when that job succeeds. A debug APK is for installation/testing only; it is not a signed Play Store release AAB and does not replace physical-device QA.
+Shared bottom navigation is wired across Home, Notes, Tasks, and Habits; Profile and Settings are available from the Home screen. The latest verified debug build is available from the [Dayflow Android checks workflow](https://github.com/spunkytechai/Spunky-Tech/actions/runs/38659199929) as the `dayflow-android-debug-apk` artifact. Subsequent commits require their own successful build run before they can be considered verified. The CI workflow checks Expo dependency compatibility, Expo Doctor, TypeScript, lint, unit tests, and Android JavaScript export. It also generates a native Android project, builds a debug APK, and uploads it as the `dayflow-android-debug-apk` workflow artifact when that job succeeds. A debug APK is for installation/testing only; it is not a signed Play Store release AAB and does not replace physical-device QA.
 
 ## Local development
 1. Install Node.js LTS and the Expo-compatible Android tooling.
@@ -28,6 +29,7 @@ Shared bottom navigation is wired across Home, Notes, Tasks, and Habits. The CI 
 ## Release checklist
 - Confirm the package ID is available and the Dayflow name/logo are cleared for use.
 - Add production app icon, adaptive icon, splash screen and store screenshots.
+- Verify unsaved-note protection and settings persistence after app restart.
 - Verify database migrations and destructive actions on-device.
 - Validate notification behavior and permission-denied paths.
 - Publish privacy policy and accurately complete Play Console Data safety.
