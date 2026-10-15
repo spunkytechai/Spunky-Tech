@@ -1,5 +1,6 @@
 import { useSQLiteContext } from 'expo-sqlite';
 import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 import { Alert, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../src/theme/colors';
@@ -20,7 +21,7 @@ export default function TasksScreen() {
     const rows = await db.getAllAsync<Task>(`SELECT id, title, due_at, priority, is_completed FROM tasks ${filter === 'all' ? '' : 'WHERE is_completed = ?'} ORDER BY is_completed ASC, CASE priority WHEN 'high' THEN 0 WHEN 'normal' THEN 1 ELSE 2 END, due_at ASC`, ...(filter === 'all' ? [] : [filter === 'done' ? 1 : 0]));
     setTasks(rows);
   }, [db, filter]);
-  useEffect(() => { load().catch(() => Alert.alert('Unable to load tasks', 'Please try again.')); }, [load]);
+  useFocusEffect(useCallback(() => { load().catch(() => Alert.alert('Unable to load tasks', 'Please try again.')); }, [load]));
   const add = async () => {
     if (!title.trim()) { Alert.alert('Add a task name', 'A task needs a short title.'); return; }
     const now = new Date().toISOString();
