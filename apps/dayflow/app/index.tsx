@@ -1,8 +1,8 @@
 import { useSQLiteContext } from 'expo-sqlite';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, type Href } from 'expo-router';
+import { useFocusEffect, useRouter, type Href } from 'expo-router';
 import { colors, spacing } from '../src/theme/colors';
 import { BottomTabs } from '../src/components/BottomTabs';
 import { localDate } from '../src/utils/date';
@@ -42,7 +42,7 @@ export default function HomeScreen() {
     setStats({ openTasks: taskCount?.count ?? 0, noteCount: noteCount?.count ?? 0, habitsDone: habitStats?.done ?? 0, habitsTotal: habitStats?.total ?? 0 });
   }, [db]);
 
-  useEffect(() => { load().catch(() => undefined); }, [load]);
+  useFocusEffect(useCallback(() => { load().catch(() => undefined); }, [load]));
 
   const go = (path: Href) => router.push(path);
   const hour = new Date().getHours();
