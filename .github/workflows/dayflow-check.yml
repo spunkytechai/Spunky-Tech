@@ -114,9 +114,3 @@ jobs:
           path: apps/dayflow/android/app/build/outputs/apk/release/dayflow-arm64.apk
           if-no-files-found: error
           retention-days: 14
-        uses: actions/upload-artifact@v4
-        with:
-          name: dayflow-android-arm64-debug-apk
-          path: apps/dayflow/android/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-          retention-days: 14
