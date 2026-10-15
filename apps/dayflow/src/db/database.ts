@@ -16,6 +16,13 @@ export async function initializeDatabase(db: SQLiteDatabase): Promise<void> {
         updated_at TEXT NOT NULL
       );
       INSERT OR IGNORE INTO user_profile(id, nickname, updated_at) VALUES (1, '', CURRENT_TIMESTAMP);
+      CREATE TABLE IF NOT EXISTS app_settings (
+        key TEXT PRIMARY KEY NOT NULL,
+        value TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+      INSERT OR IGNORE INTO app_settings(key, value, updated_at) VALUES ('show_daily_focus', '1', CURRENT_TIMESTAMP);
+      INSERT OR IGNORE INTO app_settings(key, value, updated_at) VALUES ('week_start', 'monday', CURRENT_TIMESTAMP);
       CREATE TABLE IF NOT EXISTS daily_focus (
         local_date TEXT PRIMARY KEY NOT NULL,
         focus_text TEXT NOT NULL DEFAULT '',
