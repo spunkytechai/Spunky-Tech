@@ -5,9 +5,11 @@
     "scheme": "dayflow",
     "version": "1.0.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "ios": { "supportsTablet": true },
+    "ios": {
+      "supportsTablet": true
+    },
     "android": {
       "package": "com.spunkytech.dayflow",
       "versionCode": 1,
@@ -16,9 +18,26 @@
     },
     "plugins": [
       "expo-router",
-      ["expo-sqlite", { "enableFTS": true }],
-      "expo-notifications"
+      [
+        "expo-sqlite",
+        {
+          "enableFTS": true
+        }
+      ],
+      "expo-notifications",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F7F5FF",
+          "dark": {
+            "backgroundColor": "#F7F5FF"
+          }
+        }
+      ]
     ],
-    "experiments": { "typedRoutes": true }
+    "experiments": {
+      "typedRoutes": true
+    },
+    "backgroundColor": "#F7F5FF"
   }
 }
