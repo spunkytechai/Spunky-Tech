@@ -1,5 +1,6 @@
 import { useSQLiteContext } from 'expo-sqlite';
 import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 import { Alert, FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../src/theme/colors';
@@ -21,7 +22,7 @@ export default function NotesScreen() {
     const rows = await db.getAllAsync<Note>('SELECT id, title, body, updated_at, is_pinned FROM notes WHERE title LIKE ? OR body LIKE ? ORDER BY is_pinned DESC, updated_at DESC', `%${query}%`, `%${query}%`);
     setNotes(rows);
   }, [db, query]);
-  useEffect(() => { load().catch(() => Alert.alert('Unable to load notes', 'Please try again.')); }, [load]);
+  useFocusEffect(useCallback(() => { load().catch(() => Alert.alert('Unable to load notes', 'Please try again.')); }, [load]));
 
   const open = (note: Note) => { setSelected(note.id); setTitle(note.title); setBody(note.body); };
   const fresh = () => { setSelected(null); setTitle(''); setBody(''); };
