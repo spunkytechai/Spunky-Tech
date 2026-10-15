@@ -1,5 +1,9 @@
 name: Dayflow Android checks
 
+concurrency:
+  group: dayflow-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     paths:
