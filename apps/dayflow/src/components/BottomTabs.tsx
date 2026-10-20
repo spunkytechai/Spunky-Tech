@@ -18,9 +18,9 @@ export function BottomTabs() {
             accessibilityState={{ selected: active }}
             accessibilityLabel={tab.label}
             onPress={() => router.replace(tab.path as Href)}
-            style={({ pressed }) => [styles.tab, pressed && styles.pressed]}
+            style={({ pressed }) => [styles.tab, active && styles.activeTab, pressed && styles.pressed]}
           >
-            <View style={[styles.iconWrap, active && styles.iconWrapActive]}>
+            <View style={styles.iconWrap}>
               <Text style={[styles.icon, active && styles.active]}>{tab.icon}</Text>
             </View>
             <Text style={[styles.label, active && styles.active]}>{tab.label}</Text>
@@ -49,18 +49,11 @@ const styles = StyleSheet.create({
     shadowRadius: 18,
     elevation: 7,
   },
-  tab: { flex: 1, alignItems: 'center', gap: 3, paddingVertical: 2, minHeight: 50, justifyContent: 'center' },
+  tab: { flex: 1, alignItems: 'center', gap: 3, paddingVertical: 2, minHeight: 50, justifyContent: 'center', borderRadius: 18, marginHorizontal: 2 },
+  activeTab: { backgroundColor: colors.primarySoft },
   pressed: { opacity: 0.72 },
   iconWrap: { minWidth: 46, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center' },
-  iconWrapActive: {
-    backgroundColor: colors.primarySoft,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 2,
-  },
   icon: { fontSize: 19, color: colors.muted },
   label: { fontSize: 10, color: colors.muted, fontWeight: '600' },
-  active: { color: colors.primary, fontWeight: '800' },
+  active: { color: colors.primary, fontWeight: '700' },
 });
