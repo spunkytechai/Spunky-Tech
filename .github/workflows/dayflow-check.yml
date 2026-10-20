@@ -1,0 +1,130 @@
+name: Dayflow Android checks
+
+concurrency:
+  group: dayflow-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths:
+      - "apps/dayflow/**"
+      - ".github/workflows/dayflow-check.yml"
+  push:
+    branches:
+      - main
+      - "feat/dayflow-production-mvp"
+    paths:
+      - "apps/dayflow/**"
+      - ".github/workflows/dayflow-check.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: apps/dayflow
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/dayflow/package.json
+      - name: Install dependencies
+        run: npm install
+      - name: Check Expo dependency compatibility
+        run: npx expo install --check
+      - name: Inspect Expo project configuration
+        run: npx expo-doctor
+      - name: Type-check
+        run: npm run typecheck
+      - name: Lint
+        run: npx expo lint
+      - name: Unit tests
+        run: npm test
+      - name: Export Android bundle
+        run: npx expo export --platform android
+
+  android-debug-apk:
+    if: github.event_name == 'push'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: apps/dayflow
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Cache Gradle dependencies
+        uses: gradle/actions/setup-gradle@v4
+      - name: Install dependencies
+        run: npm install
+      - name: Generate native Android project
+        run: CI=1 npx expo prebuild --platform android
+      - name: Verify legacy storage permissions are blocked
+        run: |
+          manifest="android/app/src/main/AndroidManifest.xml"
+          if grep -E 'android[.]permission[.](READ|WRITE)_EXTERNAL_STORAGE' "$manifest" | grep -v 'tools:node="remove"'; then
+            echo "A legacy external storage permission is still declared without a removal directive."
+            exit 1
+          fi
+          echo "Legacy external storage permissions are configured for removal by the manifest merger."
+      - name: Build standalone arm64 release APK with embedded JavaScript
+        working-directory: apps/dayflow/android
+        run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a --no-daemon --stacktrace --console=plain
+      - name: Sign test APK and verify bundle and permissions
+        working-directory: apps/dayflow
+        run: |
+          release_dir="android/app/build/outputs/apk/release"
+          apk="$release_dir/dayflow-arm64.apk"
+          unsigned_apk="$release_dir/app-release-unsigned.apk"
+          signed_apk="$release_dir/app-release.apk"
+
+          # Expo/Gradle may produce an unsigned or already-signed APK.
+          if [ -s "$unsigned_apk" ]; then
+            source_apk="$unsigned_apk"
+          elif [ -s "$signed_apk" ]; then
+            source_apk="$signed_apk"
+          else
+            echo "No release APK found. Contents of release output directory:"
+            find "$release_dir" -maxdepth 2 -type f -ls || true
+            exit 1
+          fi
+
+          unzip -Z1 "$source_apk" | tee /tmp/dayflow-apk-files.txt
+          if ! grep -E '^assets/index[.]android[.]bundle([.]hbc)?$' /tmp/dayflow-apk-files.txt; then
+            echo "Standalone JavaScript bundle is missing from the release APK."
+            exit 1
+          fi
+
+          mkdir -p "$HOME/.android"
+          keytool -genkeypair -keystore "$HOME/.android/dayflow-test.keystore" -storepass dayflowtest -keypass dayflowtest -alias dayflowtest -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Dayflow Local Test, OU=Spunky Tech, O=Spunky Tech, L=New Delhi, ST=Delhi, C=IN"
+          apksigner="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
+          aapt="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -n 1)"
+          test -x "$apksigner" && test -x "$aapt"
+          "$apksigner" sign --ks "$HOME/.android/dayflow-test.keystore" --ks-pass pass:dayflowtest --key-pass pass:dayflowtest --out "$apk" "$source_apk"
+          "$apksigner" verify "$apk"
+          "$aapt" dump permissions "$apk" | tee /tmp/dayflow-apk-permissions.txt
+          if grep -E 'android[.]permission[.](READ|WRITE)_EXTERNAL_STORAGE' /tmp/dayflow-apk-permissions.txt; then
+            echo "Final APK requests a legacy external storage permission."
+            exit 1
+          fi
+          echo "Embedded JavaScript bundle, APK signature, and permission audit passed."
+      - name: Upload standalone arm64 test APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: dayflow-android-arm64-test-apk
+          path: apps/dayflow/android/app/build/outputs/apk/release/dayflow-arm64.apk
+          if-no-files-found: error
+          retention-days: 14
