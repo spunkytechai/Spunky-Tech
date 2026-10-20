@@ -1,13 +1,7 @@
 import { usePathname, useRouter, type Href } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../theme/colors';
-
-const tabs = [
-  { label: 'Home', icon: '⌂', path: '/' as Href },
-  { label: 'Tasks', icon: '☷', path: '/tasks' as Href },
-  { label: 'Habits', icon: '♡', path: '/habits' as Href },
-  { label: 'Notes', icon: '▤', path: '/notes' as Href },
-];
+import { getActiveTab, tabs } from './bottomTabsModel';
 
 export function BottomTabs() {
   const pathname = usePathname();
@@ -16,14 +10,14 @@ export function BottomTabs() {
   return (
     <View style={styles.bar}>
       {tabs.map((tab) => {
-        const active = pathname === tab.path || (tab.path === '/' && pathname === '/index');
+        const active = getActiveTab(pathname) === tab.label;
         return (
           <Pressable
             key={tab.label}
             accessibilityRole="button"
             accessibilityState={{ selected: active }}
             accessibilityLabel={tab.label}
-            onPress={() => router.replace(tab.path)}
+            onPress={() => router.replace(tab.path as Href)}
             style={({ pressed }) => [styles.tab, pressed && styles.pressed]}
           >
             <View style={[styles.iconWrap, active && styles.iconWrapActive]}>
