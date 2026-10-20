@@ -45,7 +45,7 @@ export default function HomeScreen() {
     setStats({ openTasks: taskCount?.count ?? 0, noteCount: noteCount?.count ?? 0, habitsDone: habitStats?.done ?? 0, habitsTotal: habitStats?.total ?? 0 });
   }, [db]);
 
-  useFocusEffect(useCallback(() => { load().catch(() => undefined); }, [load]));
+  useFocusEffect(useCallback(() => { load().catch(() => Alert.alert('Home unavailable', 'Your local data could not be loaded. Please try again.')); }, [load]));
 
   const go = (path: Href) => router.push(path);
   const hour = new Date().getHours();
@@ -59,8 +59,12 @@ export default function HomeScreen() {
     } catch { Alert.alert('Could not save focus', 'Please try again.'); }
   };
   const openTask = async (task: Task) => {
-    await db.runAsync('UPDATE tasks SET is_completed = ?, updated_at = ? WHERE id = ?', task.is_completed ? 0 : 1, new Date().toISOString(), task.id);
-    await load();
+    try {
+      await db.runAsync('UPDATE tasks SET is_completed = ?, updated_at = ? WHERE id = ?', task.is_completed ? 0 : 1, new Date().toISOString(), task.id);
+      await load();
+    } catch {
+      Alert.alert('Could not update task', 'Please try again.');
+    }
   };
 
   return <SafeAreaView style={styles.safe}>
@@ -71,9 +75,9 @@ export default function HomeScreen() {
       </View>
       <View style={styles.hero}><Text style={styles.heroEyebrow}>A LITTLE PROGRESS, EVERY DAY</Text><Text style={styles.heroTitle}>Your day, in balance.</Text><Text style={styles.heroBody}>Capture a thought, finish a task, or keep a promise to yourself.</Text></View>
       <View style={styles.statsRow}>
-        <Pressable onPress={() => go('/tasks')} style={[styles.statCard, styles.statBlue]}><Text style={styles.statIcon}>☷</Text><Text style={styles.statValue}>{stats.openTasks}</Text><Text style={styles.statLabel}>Tasks to do</Text></Pressable>
-        <Pressable onPress={() => go('/habits')} style={[styles.statCard, styles.statGreen]}><Text style={styles.statIcon}>♡</Text><Text style={styles.statValue}>{stats.habitsDone}/{stats.habitsTotal}</Text><Text style={styles.statLabel}>Habits today</Text></Pressable>
-        <Pressable onPress={() => go('/notes')} style={[styles.statCard, styles.statAmber]}><Text style={styles.statIcon}>▤</Text><Text style={styles.statValue}>{stats.noteCount}</Text><Text style={styles.statLabel}>Notes saved</Text></Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel={`${stats.openTasks} tasks to do`} onPress={() => go('/tasks')} style={[styles.statCard, styles.statBlue]}><Text style={styles.statIcon}>☷</Text><Text style={styles.statValue}>{stats.openTasks}</Text><Text style={styles.statLabel}>Tasks to do</Text></Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel={`${stats.habitsDone} of ${stats.habitsTotal} habits completed today`} onPress={() => go('/habits')} style={[styles.statCard, styles.statGreen]}><Text style={styles.statIcon}>♡</Text><Text style={styles.statValue}>{stats.habitsDone}/{stats.habitsTotal}</Text><Text style={styles.statLabel}>Habits today</Text></Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel={`${stats.noteCount} notes saved`} onPress={() => go('/notes')} style={[styles.statCard, styles.statAmber]}><Text style={styles.statIcon}>▤</Text><Text style={styles.statValue}>{stats.noteCount}</Text><Text style={styles.statLabel}>Notes saved</Text></Pressable>
       </View>
       {showDailyFocus && <View style={styles.contentCard}>
         <View style={styles.focusHeader}><View style={styles.contentTag}><Text style={styles.contentTagText}>TODAY&apos;S FOCUS</Text></View><Pressable onPress={() => { setFocusDraft(focusText); setEditingFocus(!editingFocus); }} accessibilityRole="button"><Text style={styles.editLink}>{editingFocus ? 'Cancel' : focusText ? 'Edit' : '+ Add focus'}</Text></Pressable></View>
@@ -87,7 +91,7 @@ export default function HomeScreen() {
       </View>
       <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>Your tasks</Text><Pressable onPress={() => go('/tasks')}><Text style={styles.link}>See all</Text></Pressable></View>
       <View style={styles.card}>
-        {tasks.length === 0 ? <Text style={styles.empty}>Your task list is clear. Add a task when something needs your attention.</Text> : tasks.map((task, i) => <Pressable accessibilityRole="button" accessibilityLabel={task.is_completed ? 'Reopen task ' + task.title : 'Complete task ' + task.title} onPress={() => openTask(task)} key={task.id} style={[styles.taskRow, i > 0 && styles.rowBorder]}><Text style={[styles.check, task.is_completed === 1 && styles.checked]}>{task.is_completed ? '✓' : ''}</Text><Text style={[styles.taskText, task.is_completed === 1 && styles.completed]}>{task.title}</Text><View style={[styles.priority, task.priority === 'high' && styles.highPriority]} /></Pressable>)}
+        {tasks.length === 0 ? <Text style={styles.empty}>Your task list is clear. Add a task when something needs your attention.</Text> : tasks.map((task, i) => <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: !!task.is_completed }} accessibilityLabel={task.is_completed ? 'Reopen task ' + task.title : 'Complete task ' + task.title} onPress={() => openTask(task)} key={task.id} style={[styles.taskRow, i > 0 && styles.rowBorder]}><Text style={[styles.check, task.is_completed === 1 && styles.checked]}>{task.is_completed ? '✓' : ''}</Text><Text style={[styles.taskText, task.is_completed === 1 && styles.completed]}>{task.title}</Text><View style={[styles.priority, task.priority === 'high' && styles.highPriority]} /></Pressable>)}
       </View>
       <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>Recent notes</Text><Pressable onPress={() => go('/notes')}><Text style={styles.link}>Open notes</Text></Pressable></View>
       <View style={styles.card}>
