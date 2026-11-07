@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../src/theme/colors';
 import { BottomTabs } from '../src/components/BottomTabs';
 import { createLocalId } from '../src/db/id';
+import { escapeNoteSearch } from '../src/utils/noteSearch';
 
 type Note = { id: string; title: string; body: string; updated_at: string; is_pinned: number };
 type NoteDraft = Pick<Note, 'title' | 'body'>;
