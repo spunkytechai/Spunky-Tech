@@ -90,7 +90,7 @@ export async function initializeDatabase(db: SQLiteDatabase): Promise<void> {
     const versionRow = await db.getFirstAsync<{ value: string }>(
       "SELECT value FROM schema_meta WHERE key = 'schema_version'",
     );
-    const version = versionRow ? Number.parseInt(versionRow.value, 10) : 0;
+    const version = versionRow ? Number(versionRow.value) : 0;
 
     if (!Number.isInteger(version) || version < 0) {
       throw new Error('Database schema version is invalid');
