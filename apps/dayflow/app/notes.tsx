@@ -5,10 +5,10 @@ import { Alert, FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../src/theme/colors';
 import { BottomTabs } from '../src/components/BottomTabs';
+import { createLocalId } from '../src/db/id';
 
 type Note = { id: string; title: string; body: string; updated_at: string; is_pinned: number };
 type NoteDraft = Pick<Note, 'title' | 'body'>;
-const makeId = () => `note-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 
 export default function NotesScreen() {
   const db = useSQLiteContext();
@@ -58,7 +58,7 @@ export default function NotesScreen() {
       const now = new Date().toISOString();
       const savedTitle = title.trim();
       if (selected) await db.runAsync('UPDATE notes SET title = ?, body = ?, updated_at = ? WHERE id = ?', savedTitle, body, now, selected);
-      else { const id = makeId(); await db.runAsync('INSERT INTO notes(id, title, body, created_at, updated_at) VALUES (?, ?, ?, ?, ?)', id, savedTitle, body, now, now); setSelected(id); }
+      else { const id = await createLocalId(db, 'note'); await db.runAsync('INSERT INTO notes(id, title, body, created_at, updated_at) VALUES (?, ?, ?, ?, ?)', id, savedTitle, body, now, now); setSelected(id); }
       setTitle(savedTitle);
       setSavedDraft({ title: savedTitle, body });
       await load();
