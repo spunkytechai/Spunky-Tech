@@ -1,7 +1,5 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 
-const CURRENT_SCHEMA_VERSION = 1;
-
 const INITIAL_SCHEMA_SQL = `
   CREATE TABLE IF NOT EXISTS user_profile (
     id INTEGER PRIMARY KEY CHECK (id = 1),
@@ -57,8 +55,23 @@ const INITIAL_SCHEMA_SQL = `
   CREATE INDEX IF NOT EXISTS idx_tasks_due ON tasks(due_at);
   CREATE INDEX IF NOT EXISTS idx_tasks_completed ON tasks(is_completed);
   CREATE INDEX IF NOT EXISTS idx_habit_entries_date ON habit_entries(local_date);
-  INSERT OR IGNORE INTO schema_meta(key, value) VALUES ('schema_version', '1');
 `;
+
+type Migration = {
+  version: number;
+  up: (db: SQLiteDatabase) => Promise<void>;
+};
+
+const MIGRATIONS: Migration[] = [
+  {
+    version: 1,
+    up: async (db) => {
+      await db.execAsync(INITIAL_SCHEMA_SQL);
+    },
+  },
+];
+
+const CURRENT_SCHEMA_VERSION = MIGRATIONS[MIGRATIONS.length - 1]?.version ?? 0;
 
 export async function initializeDatabase(db: SQLiteDatabase): Promise<void> {
   await db.execAsync('PRAGMA foreign_keys = ON;');
@@ -89,8 +102,13 @@ export async function initializeDatabase(db: SQLiteDatabase): Promise<void> {
       );
     }
 
-    if (version < 1) {
-      await db.execAsync(INITIAL_SCHEMA_SQL);
+    for (const migration of MIGRATIONS) {
+      if (migration.version <= version) continue;
+
+      await migration.up(db);
+      await db.execAsync(
+        `INSERT OR REPLACE INTO schema_meta(key, value) VALUES ('schema_version', '${migration.version}')`,
+      );
     }
   });
 }
