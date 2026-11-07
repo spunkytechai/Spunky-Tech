@@ -6,7 +6,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../src/theme/colors';
 import { BottomTabs } from '../src/components/BottomTabs';
 import { dueDateForChoice, taskDueLabel } from '../src/utils/taskDueDate';
-import { localDate } from '../src/utils/date';
 import { createLocalId } from '../src/db/id';
 
 type Priority = 'low' | 'normal' | 'high';
