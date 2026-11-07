@@ -22,7 +22,7 @@ export default function NotesScreen() {
   const [savedDraft, setSavedDraft] = useState<NoteDraft | null>(null);
 
   const load = useCallback(async () => {
-    const pattern = `%${query.replace(/[!%_]/g, '!const rows = await db.getAllAsync<Note>('SELECT id, title, body, updated_at, is_pinned FROM notes WHERE title LIKE ? OR body LIKE ? ORDER BY is_pinned DESC, updated_at DESC', `%${query}%`, `%${query}%`);')}%`;
+    const pattern = `%${escapeNoteSearch(query)}%`;
     const rows = await db.getAllAsync<Note>(\"SELECT id, title, body, updated_at, is_pinned FROM notes WHERE title LIKE ? ESCAPE '!' OR body LIKE ? ESCAPE '!' OR id = ? ORDER BY is_pinned DESC, updated_at DESC\", pattern, pattern, selected);
     setNotes(rows);
   }, [db, query]);
