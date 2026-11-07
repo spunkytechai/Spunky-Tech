@@ -39,6 +39,15 @@ describe('database migrations', () => {
     expect(db.execAsync.mock.calls.some(([sql]) => sql.includes('CREATE TABLE IF NOT EXISTS notes'))).toBe(false);
   });
 
+  it('rejects malformed schema versions instead of accepting a numeric prefix', async () => {
+    const db = fakeDatabase('1garbage');
+
+    await expect(initializeDatabase(db as unknown as SQLiteDatabase)).rejects.toThrow(
+      'Database schema version is invalid',
+    );
+    expect(db.execAsync.mock.calls.some(([sql]) => sql.includes('CREATE TABLE IF NOT EXISTS notes'))).toBe(false);
+  });
+
   it('refuses a database created by a newer app version without running migrations', async () => {
     const db = fakeDatabase('99');
 
