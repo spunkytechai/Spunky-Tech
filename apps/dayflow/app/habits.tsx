@@ -6,9 +6,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../src/theme/colors';
 import { BottomTabs } from '../src/components/BottomTabs';
 import { localDate } from '../src/utils/date';
+import { createLocalId } from '../src/db/id';
 
 type Habit = { id: string; name: string; today_done: number; completed_days: number };
-const makeId = () => `habit-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 
 export default function HabitsScreen() {
   const db = useSQLiteContext();
@@ -26,14 +26,14 @@ export default function HabitsScreen() {
   const add = async () => {
     if (!name.trim()) { Alert.alert('Name your habit', 'Use a short, clear habit name.'); return; }
     const now = new Date().toISOString();
-    try { await db.runAsync('INSERT INTO habits(id,name,created_at,updated_at) VALUES(?,?,?,?)',makeId(),name.trim(),now,now);setName('');await load(); }
+    try { const id = await createLocalId(db, 'habit'); await db.runAsync('INSERT INTO habits(id,name,created_at,updated_at) VALUES(?,?,?,?)',id,name.trim(),now,now);setName('');await load(); }
     catch { Alert.alert('Could not add habit','Please try again.'); }
   };
   const toggle = async (habit: Habit) => {
     const today = localDate();
     try {
       if (habit.today_done) await db.runAsync('DELETE FROM habit_entries WHERE habit_id = ? AND local_date = ?',habit.id,today);
-      else await db.runAsync('INSERT OR IGNORE INTO habit_entries(id,habit_id,local_date,completed_at) VALUES(?,?,?,?)',makeId(),habit.id,today,new Date().toISOString());
+      else { const id = await createLocalId(db, 'habit-entry'); await db.runAsync('INSERT OR IGNORE INTO habit_entries(id,habit_id,local_date,completed_at) VALUES(?,?,?,?)',id,habit.id,today,new Date().toISOString()); }
       await load();
     } catch { Alert.alert('Could not update habit','Please try again.'); }
   };
