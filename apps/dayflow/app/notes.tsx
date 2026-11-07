@@ -25,7 +25,7 @@ export default function NotesScreen() {
     const pattern = `%${escapeNoteSearch(query)}%`;
     const rows = await db.getAllAsync<Note>("SELECT id, title, body, updated_at, is_pinned FROM notes WHERE title LIKE ? ESCAPE '!' OR body LIKE ? ESCAPE '!' OR id = ? ORDER BY is_pinned DESC, updated_at DESC", pattern, pattern, selected);
     setNotes(rows);
-  }, [db, query]);
+  }, [db, query, selected]);
   useFocusEffect(useCallback(() => { load().catch(() => Alert.alert('Unable to load notes', 'Please try again.')); }, [load]));
 
   const hasUnsavedChanges = () => {
