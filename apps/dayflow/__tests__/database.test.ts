@@ -25,7 +25,7 @@ describe('database migrations', () => {
 
     expect(db.withTransactionAsync).toHaveBeenCalledTimes(1);
     expect(db.execAsync.mock.calls.some(([sql]) => sql.includes('CREATE TABLE IF NOT EXISTS notes'))).toBe(true);
-    expect(db.execAsync.mock.calls.some(([sql]) => sql.includes("INSERT OR IGNORE INTO schema_meta(key, value) VALUES ('schema_version', '1')"))).toBe(true);
+    expect(db.execAsync.mock.calls.some(([sql]) => sql.includes("INSERT OR REPLACE INTO schema_meta(key, value) VALUES ('schema_version', '1')"))).toBe(true);
   });
 
   it('keeps an existing v1 database on its current schema without replaying the baseline migration', async () => {
