@@ -9,8 +9,8 @@ type FakeDatabase = {
 
 function fakeDatabase(schemaVersion: string | null): FakeDatabase {
   const db = {} as FakeDatabase;
-  db.execAsync = jest.fn(async () => undefined);
-  db.getFirstAsync = jest.fn(async () =>
+  db.execAsync = jest.fn(async (_sql: string) => undefined);
+  db.getFirstAsync = jest.fn(async (_sql: string, ..._params: unknown[]) =>
     schemaVersion === null ? null : { value: schemaVersion },
   );
   db.withTransactionAsync = jest.fn(async (work: () => Promise<void>) => work());
@@ -25,7 +25,7 @@ describe('database migrations', () => {
 
     expect(db.withTransactionAsync).toHaveBeenCalledTimes(1);
     expect(db.execAsync.mock.calls.some(([sql]) => sql.includes('CREATE TABLE IF NOT EXISTS notes'))).toBe(true);
-    expect(db.execAsync.mock.calls.some(([sql]) => sql.includes("'schema_version', '1'"))).toBe(true);
+    expect(db.execAsync.mock.calls.some(([sql]) => sql.includes("INSERT OR IGNORE INTO schema_meta(key, value) VALUES ('schema_version', '1')"))).toBe(true);
   });
 
   it('keeps an existing v1 database on its current schema without replaying the baseline migration', async () => {
@@ -33,7 +33,9 @@ describe('database migrations', () => {
 
     await initializeDatabase(db as unknown as SQLiteDatabase);
 
-    expect(db.getFirstAsync).toHaveBeenCalled();
+    expect(db.getFirstAsync).toHaveBeenCalledWith(
+      "SELECT value FROM schema_meta WHERE key = 'schema_version'",
+    );
     expect(db.execAsync.mock.calls.some(([sql]) => sql.includes('CREATE TABLE IF NOT EXISTS notes'))).toBe(false);
   });
 
@@ -43,6 +45,6 @@ describe('database migrations', () => {
     await expect(initializeDatabase(db as unknown as SQLiteDatabase)).rejects.toThrow(
       'Database schema version 99 is newer than supported version 1',
     );
-    expect(db.withTransactionAsync).not.toHaveBeenCalled();
+    expect(db.withTransactionAsync).toHaveBeenCalledTimes(1);
   });
 });
