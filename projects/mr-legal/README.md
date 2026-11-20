@@ -52,4 +52,4 @@ npm run data:collect:nyaykosh -- --help
 npm run data:collect:nyaykosh -- --details --retries 4
 ```
 
-The checksum proves file integrity after capture; it does not prove that the source text is legally authoritative or complete. Verify every instrument against the primary Gazette/ministry publication before relying on its legal effect.
+Provision and penalty rows are extracted from full-law payloads when present; absent fields are not fabricated. The manifest records counts and SHA-256 checksums for all three JSONL files. A checksum proves file integrity after capture; it does not prove that the source text is legally authoritative or complete. Verify every instrument against the primary Gazette/ministry publication before relying on its legal effect.
