@@ -78,3 +78,30 @@ Haryana e-Gazette (`https://egazetteharyana.gov.in/`) and the Ranbir Government 
 The validator's host policy distinguishes official government portals from approved secondary dataset hosts. It does not label GitHub or AWS-hosted data as government-primary material. This distinction is intentional: court-data mirrors require source attribution and separate legal/permission review.
 
 Run `npm test`, `npm run data:validate` and `npm run test:data:python`. Migration `0003_official_state_portals.sql` creates an evidence capture table and a document ledger for portal observations and downloaded Gazette instruments.
+
+## State Gazette acquisition pipeline
+
+The state source registry now includes Andhra Pradesh, Kerala and Manipur in addition to the previously recorded Telangana, Haryana and Jammu & Kashmir sources. The official Manipur Directorate of Printing & Stationery explains that its e-Gazettes are digitally signed and publicly downloadable; it points to a free current archive from 1 August 2025 and a paid legacy archive covering 1947–2020. The Kerala COMPOSE site exposes weekly/extraordinary Gazette services and a search-by-file-number route. The Andhra Pradesh e-Gazette result exposes recent weekly Gazette records, although direct browser extraction returned HTTP 403 during inspection.
+
+The state Gazette importer deliberately consumes a JSON capture produced from a portal observation; it does not claim to be a live scraper. Example:
+
+```bash
+npm run data:import:state-gazette -- --source IN-MANIPUR-EGAZETTE --input data/raw/manipur/listing-capture.json
+```
+
+Input shape:
+
+```json
+{
+  "records": [
+    {
+      "title": "Weekly Gazette",
+      "href": "https://egazettemanipur.mn.gov.in/path/to/issue.pdf",
+      "date": "2025-08-06",
+      "type": "weekly"
+    }
+  ]
+}
+```
+
+The importer writes `listing.jsonl` and a SHA-256 manifest, rejects unknown state sources and unregistered document hosts, and marks listing records as metadata-only. A downloaded PDF must still be supplied as bytes to the document capture layer, hashed, and verified against the original Gazette issue before legal effect is asserted. The state-specific capture schema is in migration `0003_official_state_portals.sql`.
