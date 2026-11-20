@@ -66,3 +66,15 @@ The source registry tracks government portal evidence separately from document c
 No portal is treated as an API until endpoints and response schemas are actually documented and tested. Portal discovery records should be stored in `official_portal_captures`; individual documents belong in `official_portal_documents` with a SHA-256 hash and pending verification state.
 
 Run `npm run data:validate:portals` to validate the government source registry. Migration `0003_official_state_portals.sql` adds evidence capture and document ledger tables. The new portal normalizer accepts government portal observations only from HTTPS `.gov.in` / `.nic.in` hosts and marks API availability as unverified unless a separate verified integration is implemented.
+
+## Portal discovery evidence and next acquisition targets
+
+The TinyFish-assisted inspection confirmed that the legacy `www.indiacode.nic.in` portal redirects to `https://indiacode.gov.in/`. This is now the canonical registry URL; the old host is retained as a legacy URL. The inspection did not establish a documented public API for the new portal, so the India Code adapter remains an approved export/source-capture adapter, not an invented scraper.
+
+The Telangana State Portal identifies the Commissionerate of Printing as the authorized publisher and links the public e-Gazette at `https://tggazette.cgg.gov.in/`. Its public description states that it publishes weekly and extraordinary Gazettes, provides downloadable digital copies, generates issue/job numbers, and offers reports by department, district, month and year. The government portal is the discovery source; the linked document portal remains the candidate acquisition endpoint.
+
+Haryana e-Gazette (`https://egazetteharyana.gov.in/`) and the Ranbir Government Press Gazette index (`https://rgp.jk.gov.in/gazette.html`) were discovered as official government publishing/search endpoints, but their detailed routes and machine-readable APIs were not confirmed during this inspection. The Central eGazette state directory returned an error during the browser capture. Each remains marked as a portal-only source until endpoints are independently tested.
+
+The validator's host policy distinguishes official government portals from approved secondary dataset hosts. It does not label GitHub or AWS-hosted data as government-primary material. This distinction is intentional: court-data mirrors require source attribution and separate legal/permission review.
+
+Run `npm test`, `npm run data:validate` and `npm run test:data:python`. Migration `0003_official_state_portals.sql` creates an evidence capture table and a document ledger for portal observations and downloaded Gazette instruments.
