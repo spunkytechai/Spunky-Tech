@@ -6,7 +6,8 @@ const httpsUrl = value => {
   try { const u = new URL(value); return u.protocol === 'https:' ? u : null; }
   catch { return null; }
 };
-const approvedHost = host => host === 'gov.in' || host.endsWith('.gov.in') || host === 'nic.in' || host.endsWith('.nic.in') || host === 'www.legislative.gov.in' || host === 'legislative.gov.in' || host === 'github.com' || host.endsWith('.github.io') || host === 'github.com' || host.endsWith('.amazonaws.com') || host.endsWith('.s3.amazonaws.com') || host === 'registry.opendata.aws';
+const approvedHost = host => host === 'gov.in' || host.endsWith('.gov.in') || host === 'nic.in' || host.endsWith('.nic.in');
+const secondaryDatasetHost = host => host === 'github.com' || host.endsWith('.github.io') || host === 'registry.opendata.aws' || host.endsWith('.amazonaws.com') || host.endsWith('.s3.amazonaws.com');
 
 export function normalizeOfficialPortalCapture(input) {
   if (!input?.source_id) throw new Error('source_id is required');
@@ -43,7 +44,12 @@ export function validateSourceRegistry(rows) {
     if (!row?.name?.trim?.()) errors.push(`${prefix}: name is required`);
     const url = httpsUrl(row?.url);
     if (!url) errors.push(`${prefix}: url must be HTTPS`);
-    else if (!approvedHost(url.hostname)) errors.push(`${prefix}: url host must be an approved government domain`);
+    else {
+      const approved = row.authority_level === 'secondary_dataset_from_public_court_records'
+        ? secondaryDatasetHost(url.hostname)
+        : (Array.isArray(row.approved_hosts) && row.approved_hosts.includes(url.hostname));
+      if (!approved) errors.push(`${prefix}: url host must match its explicit source host allowlist`);
+    }
     if (!row?.authority_level) errors.push(`${prefix}: authority_level is required`);
     if (!row?.jurisdiction) errors.push(`${prefix}: jurisdiction is required`);
   }
