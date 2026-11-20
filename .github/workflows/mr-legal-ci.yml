@@ -1,0 +1,42 @@
+name: Mr.Legal quality gates
+
+on:
+  pull_request:
+    paths:
+      - "projects/mr-legal/**"
+      - ".github/workflows/mr-legal-ci.yml"
+  push:
+    branches:
+      - main
+      - "feat/mr-legal-foundation"
+    paths:
+      - "projects/mr-legal/**"
+      - ".github/workflows/mr-legal-ci.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/mr-legal
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run JavaScript tests
+        run: npm test
+      - name: Validate source registry
+        run: npm run data:validate
+      - name: Run Python collector tests
+        run: npm run test:data:python
+      - name: Check collector syntax
+        run: |
+          node --check lib/legislation.mjs
+          node --check scripts/collect-nyaykosh.mjs
