@@ -52,7 +52,7 @@ def extract_one(pdf_path: Path, output_dir: Path, ocr: str = "auto", language: s
                     prefix = Path(temp_dir) / f"page-{page:04d}"
                     run_command(["pdftoppm", "-f", str(page), "-l", str(page), "-r", "200", "-png", "-singlefile", str(pdf_path), str(prefix)])
                     pages.append(run_command(["tesseract", str(prefix.with_suffix('.png')), "stdout", "-l", language]).stdout)
-                text = "\\n\\n".join(pages)
+                text = "\n\n".join(pages)
                 method, status = "tesseract_ocr", "ocr_text_extracted_pending_review"
         except (subprocess.CalledProcessError, OSError, ValueError) as exc:
             errors.append(f"ocr: {exc}")
@@ -70,7 +70,7 @@ def extract_one(pdf_path: Path, output_dir: Path, ocr: str = "auto", language: s
         "captured_at": datetime.now(timezone.utc).isoformat(), "legal_effect_verified": False,
         "legal_review_required": True, "errors": errors,
     }
-    metadata_path.write_text(json.dumps(metadata, indent=2) + "\\n", encoding="utf-8")
+    metadata_path.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
     return metadata
 
 
