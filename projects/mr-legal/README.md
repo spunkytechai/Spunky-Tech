@@ -53,3 +53,16 @@ npm run data:collect:nyaykosh -- --details --retries 4
 ```
 
 Provision and penalty rows are extracted from full-law payloads when present; absent fields are not fabricated. The manifest records counts and SHA-256 checksums for all three JSONL files. A checksum proves file integrity after capture; it does not prove that the source text is legally authoritative or complete. Verify every instrument against the primary Gazette/ministry publication before relying on its legal effect.
+
+## Official state Gazette source discovery
+
+The source registry tracks government portal evidence separately from document corpus coverage. The current verified discovery includes:
+- **India Code:** the old `www.indiacode.nic.in` host redirects visitors to `https://indiacode.gov.in/`. The current portal is registered as the canonical host. The adapter does not infer a public API from this redirect.
+- **Telangana:** the State Portal identifies the Commissionerate of Printing as the authorized publisher and links `https://tggazette.cgg.gov.in/`. The official explainer describes weekly and extraordinary gazettes, downloadable digital copies, generated issue/job numbers and reports by department, district, month and year.
+- **Haryana:** an official e-Gazette public search portal is registered; browser extraction could not confirm its internal document/API routes.
+- **Jammu and Kashmir:** Ranbir Government Press publishes a Gazette archive index; browser extraction could not confirm direct document/API routes.
+- **Central eGazette state directory:** the public page returned a portal error during this inspection. It is tracked as a discovery route, not treated as a working endpoint.
+
+No portal is treated as an API until endpoints and response schemas are actually documented and tested. Portal discovery records should be stored in `official_portal_captures`; individual documents belong in `official_portal_documents` with a SHA-256 hash and pending verification state.
+
+Run `npm run data:validate:portals` to validate the government source registry. Migration `0003_official_state_portals.sql` adds evidence capture and document ledger tables. The new portal normalizer accepts government portal observations only from HTTPS `.gov.in` / `.nic.in` hosts and marks API availability as unverified unless a separate verified integration is implemented.
