@@ -105,3 +105,12 @@ Input shape:
 ```
 
 The importer writes `listing.jsonl` and a SHA-256 manifest, rejects unknown state sources and unregistered document hosts, and marks listing records as metadata-only. A downloaded PDF must still be supplied as bytes to the document capture layer, hashed, and verified against the original Gazette issue before legal effect is asserted. The state-specific capture schema is in migration `0003_official_state_portals.sql`.
+
+## State Gazette sources added in the latest build
+
+- **Andhra Pradesh:** APeGAZETTE search results show recent weekly Gazette records; direct portal extraction returned HTTP 403 in this inspection, so API and direct-download behavior remain unverified.
+- **Kerala:** COMPOSE lists weekly and extraordinary Gazette services and a search-by-file-number route. It points to the legacy archive for issues before 2 October 2021.
+- **Manipur:** The Directorate of Printing & Stationery states that its Gazette PDFs are digitally signed. It links the free current archive from 1 August 2025 and a fee-based legacy archive (1947–2020), plus weekly and extraordinary listing routes.
+- **Telangana, Haryana and Jammu & Kashmir:** Retained as registered official portal discovery sources; API and document paths are not yet fully verified.
+
+The registry now records explicit `approved_hosts` for each source. This is stricter than a broad domain-suffix rule: a source's linked document host must be explicitly associated with that source. Secondary court-data publishers are classified separately and are not treated as government primary sources.
