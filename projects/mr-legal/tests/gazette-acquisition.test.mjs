@@ -7,7 +7,7 @@ const base = {
   document_url: 'https://egazettemanipur.mn.gov.in/files/weekly-2026.pdf', title: 'Weekly Gazette 2026',
   jurisdiction: 'IN-MN', captured_at: '2026-11-21T00:00:00Z'
 };
-const pdf = Buffer.from('%PDF-1.7\\n1 0 obj\\n<<>>\\nendobj\\n%%EOF');
+const pdf = Buffer.from('%PDF-1.7\n1 0 obj\n<<>>\nendobj\n%%EOF');
 
 test('normalizes a PDF capture with content hash and pending legal review', () => {
   const row = normalizeGazetteDownload({ ...base, bytes: pdf, final_url: base.document_url });
