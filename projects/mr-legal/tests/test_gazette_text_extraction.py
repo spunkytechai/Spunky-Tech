@@ -18,7 +18,7 @@ class GazetteTextExtractionTests(unittest.TestCase):
     def test_records_missing_tools_without_claiming_legal_verification(self):
         with tempfile.TemporaryDirectory() as temp:
             source = Path(temp) / 'issue.pdf'
-            source.write_bytes(b'%PDF-1.7\\nminimal fixture')
+            source.write_bytes(b'%PDF-1.7\nminimal fixture')
             with patch('scripts.extract_gazette_text.shutil.which', return_value=None):
                 result = extract_one(source, Path(temp) / 'out', ocr='auto')
             self.assertEqual(result['extraction_status'], 'ocr_tools_missing')
@@ -30,7 +30,7 @@ class GazetteTextExtractionTests(unittest.TestCase):
     def test_extracts_text_layer_and_writes_checksum_metadata(self):
         with tempfile.TemporaryDirectory() as temp:
             source = Path(temp) / 'issue.pdf'
-            source.write_bytes(b'%PDF-1.7\\nminimal fixture')
+            source.write_bytes(b'%PDF-1.7\nminimal fixture')
             class Completed:
                 stdout = 'Official Gazette text ' * 10
             with patch('scripts.extract_gazette_text.shutil.which', side_effect=lambda name: '/usr/bin/pdftotext' if name == 'pdftotext' else None), patch('scripts.extract_gazette_text.run_command', return_value=Completed()):
