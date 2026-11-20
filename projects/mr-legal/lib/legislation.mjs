@@ -136,3 +136,37 @@ export async function fetchNyaykoshLaw(slug, { fetchImpl = fetch, baseUrl = 'htt
   if (!response.ok) throw new Error(`Nyaykosh law request failed: HTTP ${response.status}`);
   return normalizeNyaykoshLaw(await response.json());
 }
+
+export function normalizeNyaykoshProvision(raw, lawExternalId) {
+  if (!lawExternalId || typeof lawExternalId !== 'string') throw new Error('law external_id is required for a provision');
+  const provisionRef = first(raw?.number, raw?.sectionNumber, raw?.section_number, raw?.provisionRef, raw?.provision_ref, raw?.section, raw?.id);
+  if (provisionRef === undefined || provisionRef === null || String(provisionRef).trim() === '') throw new Error('Nyaykosh provision reference is required');
+  const heading = first(raw?.heading, raw?.title, raw?.name, raw?.shortTitle, null);
+  const text = first(raw?.text, raw?.content, raw?.body, raw?.provisionText, raw?.provision_text, null);
+  return {
+    law_external_id: lawExternalId, provision_ref: String(provisionRef).trim(),
+    heading: typeof heading === 'string' ? heading.trim() : null,
+    text: typeof text === 'string' ? text : null,
+    parent_provision_ref: first(raw?.parentNumber, raw?.parent_number, raw?.parentRef, raw?.parent_ref, null),
+    language: first(raw?.language, 'en'),
+    source_locator: `https://lawascode.negd.in/laws/${encodeURIComponent(lawExternalId)}`,
+    verification_status: 'needs_primary_source_check',
+    metadata: { source: 'Nyaykosh / NeGD', raw_source: raw }
+  };
+}
+
+export function normalizeNyaykoshPenalty(raw, lawExternalId) {
+  if (!lawExternalId || typeof lawExternalId !== 'string') throw new Error('law external_id is required for a penalty');
+  const breach = first(raw?.breach, raw?.offence, raw?.violation, raw?.description, raw?.title);
+  if (!breach || typeof breach !== 'string') throw new Error('Nyaykosh penalty breach description is required');
+  const rawSection = first(raw?.section, raw?.provision, raw?.provisionRef, raw?.provision_ref, null);
+  const sectionMatch = typeof rawSection === 'string' ? rawSection.match(/(?:section|sec\.?|s\.?)\s*(\d+[A-Za-z]?(?:\([^)]+\))?)/i) : null;
+  const provisionRef = sectionMatch?.[1] ?? (rawSection === null ? null : String(rawSection).trim());
+  return {
+    law_external_id: lawExternalId, breach: breach.trim(),
+    maximum_penalty: first(raw?.max_penalty, raw?.maxPenalty, raw?.maximumPenalty, raw?.maximum_penalty, null),
+    minimum_penalty: first(raw?.min_penalty, raw?.minPenalty, raw?.minimumPenalty, raw?.minimum_penalty, null),
+    provision_ref: provisionRef, verification_status: 'needs_primary_source_check',
+    metadata: { source: 'Nyaykosh / NeGD', raw_source: raw }
+  };
+}
