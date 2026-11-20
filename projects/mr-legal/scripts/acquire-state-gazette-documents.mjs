@@ -25,12 +25,12 @@ export function parseArgs(args = []) {
 export async function runAcquisition({ args = process.argv.slice(2), log = console.log } = {}) {
   const options = parseArgs(args);
   if (options.help) {
-    log('Gazette PDF acquisition\\nUsage: npm run data:acquire:state-gazette -- --input records.jsonl --out data/raw/state-gazettes/documents [--max-mb 25]\\nInput rows require source_id, source_url, document_url, title and jurisdiction. Downloads are restricted to registered official hosts.');
+    log('Gazette PDF acquisition\nUsage: npm run data:acquire:state-gazette -- --input records.jsonl --out data/raw/state-gazettes/documents [--max-mb 25]\nInput rows require source_id, source_url, document_url, title and jurisdiction. Downloads are restricted to registered official hosts.');
     return null;
   }
   const raw = await readFile(resolve(options.input), 'utf8');
   let records;
-  if (options.input.toLowerCase().endsWith('.jsonl')) records = raw.split(/\\r?\\n/).filter(Boolean).map(line => JSON.parse(line));
+  if (options.input.toLowerCase().endsWith('.jsonl')) records = raw.split(/\r?\n/).filter(Boolean).map(line => JSON.parse(line));
   else {
     const parsed = JSON.parse(raw);
     records = Array.isArray(parsed) ? parsed : parsed.records;
