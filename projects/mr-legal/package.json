@@ -11,6 +11,8 @@
     "data:collect:hc": "python scripts/collect-high-court-metadata.py",
     "data:collect:nyaykosh": "node scripts/collect-nyaykosh.mjs",
     "data:validate:portals": "npm run data:validate",
-    "test:portals": "node --test tests/official-portals.test.mjs"
+    "test:portals": "node --test tests/official-portals.test.mjs",
+    "data:import:state-gazette": "node scripts/import-state-gazette-listing.mjs",
+    "test:state-gazettes": "node --test tests/state-gazettes.test.mjs tests/state-gazette-import.test.mjs"
   }
 }
