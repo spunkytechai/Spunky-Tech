@@ -63,16 +63,16 @@ export async function acquireGazetteDocuments({ records, output_dir, fetch_impl 
     officialHttpsUrl(record.source_url, source);
     const requestedUrl = officialHttpsUrl(record.document_url, source);
     const response = await fetch_impl(requestedUrl.toString(), { method: 'GET', redirect: 'follow', signal: AbortSignal.timeout(timeout_ms), headers: { accept: 'application/pdf,application/octet-stream;q=0.9' } });
-    if (!response.ok) throw new Error(\`download failed with HTTP \${response.status} for \${requestedUrl.hostname}\`);
+    if (!response.ok) throw new Error(\`download failed with HTTP ${response.status} for ${requestedUrl.hostname}\`);
     const finalUrl = response.url || requestedUrl.toString();
     officialHttpsUrl(finalUrl, source);
     const contentLength = Number(response.headers?.get?.('content-length'));
-    if (Number.isFinite(contentLength) && contentLength > max_bytes) throw new Error(\`document exceeds max_bytes (\${max_bytes})\`);
+    if (Number.isFinite(contentLength) && contentLength > max_bytes) throw new Error(\`document exceeds max_bytes (${max_bytes})\`);
     const bytes = Buffer.from(await response.arrayBuffer());
-    if (bytes.length > max_bytes) throw new Error(\`document exceeds max_bytes (\${max_bytes})\`);
+    if (bytes.length > max_bytes) throw new Error(\`document exceeds max_bytes (${max_bytes})\`);
     const capturedAt = now().toISOString();
     const row = normalizeGazetteDownload({ ...record, final_url: finalUrl, bytes, captured_at: record.captured_at ?? capturedAt, downloaded_at: capturedAt });
-    const fileName = \`\${row.sha256}.pdf\`;
+    const fileName = \`${row.sha256}.pdf\`;
     if (seen.has(row.sha256)) {
       duplicate_count += 1;
       manifest.push({ ...row, file_name: fileName, duplicate_of_sha256: row.sha256 });
