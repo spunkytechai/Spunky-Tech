@@ -114,3 +114,7 @@ The importer writes `listing.jsonl` and a SHA-256 manifest, rejects unknown stat
 - **Telangana, Haryana and Jammu & Kashmir:** Retained as registered official portal discovery sources; API and document paths are not yet fully verified.
 
 The registry now records explicit `approved_hosts` for each source. This is stricter than a broad domain-suffix rule: a source's linked document host must be explicitly associated with that source. Secondary court-data publishers are classified separately and are not treated as government primary sources.
+
+### Source-host validation
+
+Every source registry entry now carries an explicit `approved_hosts` array derived from its registered primary portal and declared official API/archive links. Registry validation checks the canonical URL against that per-source list. Secondary court-data mirrors remain separately classified and are not treated as government publishers. This prevents a broad `.gov.in` suffix rule from silently authorizing unrelated or unregistered hosts.
