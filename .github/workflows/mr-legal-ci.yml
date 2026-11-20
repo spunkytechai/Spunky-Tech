@@ -34,7 +34,7 @@ jobs:
         run: npm test
       - name: Validate source registry
         run: npm run data:validate
-      - name: Run Python collector tests
+      - name: Run Python collector and extraction tests
         run: npm run test:data:python
       - name: Check collector syntax
         run: |
@@ -42,5 +42,8 @@ jobs:
           node --check scripts/collect-nyaykosh.mjs
           node --check lib/official-portals.mjs
           node --check lib/state-gazettes.mjs
+          node --check lib/gazette-acquisition.mjs
           node --check scripts/import-state-gazette-listing.mjs
+          node --check scripts/acquire-state-gazette-documents.mjs
+          python -m py_compile scripts/extract_gazette_text.py
           npm run test:state-gazettes
