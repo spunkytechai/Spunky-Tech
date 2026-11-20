@@ -5,7 +5,12 @@ const safeDate = value => {
 };
 
 export function normalizeJudgmentMetadata(raw, context = {}) {
-  const externalId = raw.cnr || raw.case_id || raw.citation || raw.path || null;
+  const externalId = raw.cnr && raw.decision_date
+    ? [raw.cnr, safeDate(raw.decision_date), raw.order_number].filter(Boolean).join('|')
+    : raw.case_id || raw.citation || raw.path || raw.cnr || null;
+  const courtNameFromCode = context.courtCode ? context.courtCodes?.[context.courtCode] : null;
+  const isSupremeCourt = /supreme court/i.test(raw.court || '');
+  const isMappedHighCourt = Boolean(context.courtCode && courtNameFromCode);
   return {
     external_id: externalId,
     title: String(raw.title || '').trim(),
@@ -13,11 +18,13 @@ export function normalizeJudgmentMetadata(raw, context = {}) {
     respondent: raw.respondent ?? null,
     citation: raw.citation ?? null,
     decision_date: safeDate(raw.decision_date),
-    court_id: /supreme court/i.test(raw.court || '') ? 'IN-SC' : 'IN-HC-UNMAPPED',
-    court_name: raw.court ?? null,
+    court_id: isSupremeCourt ? 'IN-SC' : isMappedHighCourt ? `IN-HC-${context.courtCode}` : 'IN-HC-UNMAPPED',
+    court_name: courtNameFromCode || raw.court || null,
+    court_code: isMappedHighCourt ? context.courtCode : null,
     judge: raw.judge ?? null,
     author_judge: raw.author_judge ?? null,
     disposal_nature: raw.disposal_nature ?? null,
+    order_number: raw.order_number ?? null,
     language_codes: Array.isArray(raw.available_languages) ? raw.available_languages : [],
     source_document_path: raw.path ?? null,
     source_record: raw,
