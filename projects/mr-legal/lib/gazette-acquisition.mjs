@@ -11,7 +11,7 @@ const SOURCES = new Map([
   ['IN-HARYANA-EGAZETTE', { hosts: ['egazetteharyana.gov.in'], jurisdiction: 'IN-HR' }],
   ['IN-JK-GAZETTE', { hosts: ['rgp.jk.gov.in'], jurisdiction: 'IN-JK' }]
 ]);
-const isTimestamp = value => typeof value === 'string' && /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$/.test(value) && !Number.isNaN(Date.parse(value));
+const isTimestamp = value => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/.test(value) && !Number.isNaN(Date.parse(value));
 function officialHttpsUrl(value, source) {
   let url;
   try { url = new URL(value); } catch { throw new Error('source_url and document_url must be valid HTTPS URLs'); }
@@ -80,13 +80,13 @@ export async function acquireGazetteDocuments({ records, output_dir, fetch_impl 
     });
     manifest.push({ ...row, file_name: fileName });
   }
-  const jsonl = manifest.map(row => JSON.stringify(row)).join('\\n') + (manifest.length ? '\\n' : '');
+  const jsonl = manifest.map(row => JSON.stringify(row)).join('\n') + (manifest.length ? '\n' : '');
   await write_file_impl(resolve(output, 'manifest.jsonl'), jsonl, 'utf8');
   const summary = {
     captured_at: now().toISOString(), requested_count: records.length, downloaded_count: manifest.length,
     duplicate_count, failed_count: 0, legal_effect_verified_count: 0,
     note: 'PDF integrity and provenance captured. No document is legally verified by acquisition alone.'
   };
-  await write_file_impl(resolve(output, 'acquisition-summary.json'), JSON.stringify(summary, null, 2) + '\\n', 'utf8');
+  await write_file_impl(resolve(output, 'acquisition-summary.json'), JSON.stringify(summary, null, 2) + '\n', 'utf8');
   return summary;
 }
