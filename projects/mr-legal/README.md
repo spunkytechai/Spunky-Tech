@@ -118,3 +118,22 @@ The registry now records explicit `approved_hosts` for each source. This is stri
 ### Source-host validation
 
 Every source registry entry now carries an explicit `approved_hosts` array derived from its registered primary portal and declared official API/archive links. Registry validation checks the canonical URL against that per-source list. Secondary court-data mirrors remain separately classified and are not treated as government publishers. This prevents a broad `.gov.in` suffix rule from silently authorizing unrelated or unregistered hosts.
+
+## State Gazette source discovery — validated scope
+
+Live source inspection expanded the source registry to 12 entries, including six state Gazette sources: Andhra Pradesh, Kerala, Manipur, Telangana, Haryana and Jammu & Kashmir. The latest state-specific work includes an offline listing importer and document capture normalizers. The importer consumes an explicitly captured JSON listing; it does not claim to scrape the live portals or download PDF documents automatically.
+
+Manipur's Directorate of Printing & Stationery states that its e-Gazettes are digitally signed and publicly downloadable. Its page points to a free current archive from 1 August 2025 and a paid legacy archive covering 1947–2020. Kerala COMPOSE describes weekly and extraordinary Gazette services and exposes a search-by-file-number route. Andhra Pradesh search results expose recent weekly Gazettes, but direct portal extraction returned HTTP 403 during this inspection. The Haryana and Jammu & Kashmir entries remain portal discovery sources, not verified automated feeds.
+
+Every registry record now has an explicit `approved_hosts` list. The validation function checks the canonical URL against that record-specific allowlist. Secondary judicial datasets are separately classified; their GitHub/AWS hosting is not represented as government-primary authority.
+
+Commands:
+```bash
+npm test
+npm run data:validate
+npm run test:state-gazettes
+npm run test:data:python
+npm run data:import:state-gazette -- --source IN-MANIPUR-EGAZETTE --input data/raw/manipur/listing-capture.json
+```
+
+Migration `0003_official_state_portals.sql` contains portal evidence, official source documents and state Gazette-specific records with content hashes and separate publication/commencement dates. The migration has not been applied to a live database in this environment.
