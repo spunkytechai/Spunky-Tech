@@ -14,7 +14,11 @@
     "api_status": "not_verified",
     "license_status": "review_required_per_document",
     "coverage_status": "central_and_state_repository_scope_requires_reconciliation",
-    "notes": "Legacy hostname redirects to the current .gov.in portal. No public API is assumed until documented."
+    "notes": "Legacy hostname redirects to the current .gov.in portal. No public API is assumed until documented.",
+    "approved_hosts": [
+      "indiacode.gov.in",
+      "www.indiacode.nic.in"
+    ]
   },
   {
     "id": "IN-EGAZETTE-CENTRAL",
@@ -28,7 +32,10 @@
     "access_method": "public_portal_and_download",
     "api_status": "not_verified",
     "license_status": "review_required_per_document",
-    "coverage_status": "central_gazette_official_publication"
+    "coverage_status": "central_gazette_official_publication",
+    "approved_hosts": [
+      "egazette.gov.in"
+    ]
   },
   {
     "id": "IN-NEGD-NYAYKOSH",
@@ -42,7 +49,11 @@
     "access_method": "public_web_and_documented_api",
     "api_status": "documented_partial_api",
     "license_status": "review_required_per_dataset",
-    "coverage_status": "partial_reported"
+    "coverage_status": "partial_reported",
+    "approved_hosts": [
+      "negd.gov.in",
+      "lawascode.negd.in"
+    ]
   },
   {
     "id": "IN-SC-OPEN-DATA",
@@ -54,7 +65,10 @@
     "url": "https://github.com/vanga/indian-supreme-court-judgments",
     "access_method": "public_aws_s3_metadata_parquet_and_archives",
     "license_status": "CC-BY-4.0_as_reported_verify_before_use",
-    "coverage_status": "1950_to_2025_reported"
+    "coverage_status": "1950_to_2025_reported",
+    "approved_hosts": [
+      "github.com"
+    ]
   },
   {
     "id": "IN-HC-AWS-OPEN-DATA",
@@ -66,7 +80,10 @@
     "url": "https://registry.opendata.aws/indian-high-court-judgments/",
     "access_method": "public_aws_s3_tar_and_parquet",
     "license_status": "CC-BY-4.0_as_reported_verify_before_use",
-    "coverage_status": "25_high_courts_reported_quarterly_updates"
+    "coverage_status": "25_high_courts_reported_quarterly_updates",
+    "approved_hosts": [
+      "registry.opendata.aws"
+    ]
   },
   {
     "id": "IN-NJDG",
@@ -78,7 +95,10 @@
     "url": "https://ecommitteesci.gov.in/service/national-judicial-data-grid/",
     "access_method": "public_dashboard",
     "license_status": "review_required",
-    "coverage_status": "live_statistics"
+    "coverage_status": "live_statistics",
+    "approved_hosts": [
+      "ecommitteesci.gov.in"
+    ]
   },
   {
     "id": "IN-TELANGANA-EGAZETTE",
@@ -93,7 +113,11 @@
     "api_status": "not_verified",
     "license_status": "review_required_per_document",
     "coverage_status": "state_weekly_and_extraordinary_gazettes",
-    "notes": "State portal describes the e-Gazette directory, document downloads, issue/job numbers and department, district, month and year reports."
+    "notes": "State portal describes the e-Gazette directory, document downloads, issue/job numbers and department, district, month and year reports.",
+    "approved_hosts": [
+      "tggazette.cgg.gov.in",
+      "www.telangana.gov.in"
+    ]
   },
   {
     "id": "IN-HARYANA-EGAZETTE",
@@ -106,7 +130,10 @@
     "access_method": "state_public_search_portal",
     "api_status": "not_verified",
     "license_status": "review_required_per_document",
-    "coverage_status": "unverified"
+    "coverage_status": "unverified",
+    "approved_hosts": [
+      "egazetteharyana.gov.in"
+    ]
   },
   {
     "id": "IN-JK-GAZETTE",
@@ -119,7 +146,10 @@
     "access_method": "government_press_publication_index",
     "api_status": "not_verified",
     "license_status": "review_required_per_document",
-    "coverage_status": "yearwise_archive_listed"
+    "coverage_status": "yearwise_archive_listed",
+    "approved_hosts": [
+      "rgp.jk.gov.in"
+    ]
   },
   {
     "id": "IN-AP-EGAZETTE",
@@ -133,7 +163,10 @@
     "api_status": "not_verified",
     "license_status": "review_required_per_document",
     "coverage_status": "recent_weekly_gazettes_visible_search_result",
-    "notes": "Search result showed recent weekly Gazette items; browser extraction returned HTTP 403 during inspection. No API inferred."
+    "notes": "Search result showed recent weekly Gazette items; browser extraction returned HTTP 403 during inspection. No API inferred.",
+    "approved_hosts": [
+      "apegazette.cgg.gov.in"
+    ]
   },
   {
     "id": "IN-KERALA-COMPOSE",
@@ -148,7 +181,11 @@
     "api_status": "routes_observed_api_unverified",
     "license_status": "review_required_per_document",
     "coverage_status": "current_and_legacy_routes_listed",
-    "notes": "Portal exposes weekly and extra-ordinary Gazette services and search-by-file-number links. Legacy archive is linked for Gazettes before 2021-10-02. Portal links reveal egazetteSearchWithFileNumber route."
+    "notes": "Portal exposes weekly and extra-ordinary Gazette services and search-by-file-number links. Legacy archive is linked for Gazettes before 2021-10-02. Portal links reveal egazetteSearchWithFileNumber route.",
+    "approved_hosts": [
+      "compose.kerala.gov.in",
+      "gazette.kerala.gov.in"
+    ]
   },
   {
     "id": "IN-MANIPUR-EGAZETTE",
@@ -164,6 +201,11 @@
     "api_status": "routes_observed_api_unverified",
     "license_status": "review_required_per_document",
     "coverage_status": "current_archive_from_2025_08_01_free_legacy_archive_1947_to_2020_paid",
-    "notes": "Official department page says e-Gazettes are digitally signed and publicly downloadable. Current archive from 2025-08-01 is free; legacy archive 1947-2020 is fee-based. Website page lists weekly and extraordinary Gazette listing routes."
+    "notes": "Official department page says e-Gazettes are digitally signed and publicly downloadable. Current archive from 2025-08-01 is free; legacy archive 1947-2020 is fee-based. Website page lists weekly and extraordinary Gazette listing routes.",
+    "approved_hosts": [
+      "manipurgovtpress.nic.in",
+      "egazette.mn.gov.in",
+      "egazettemanipur.mn.gov.in"
+    ]
   }
 ]
