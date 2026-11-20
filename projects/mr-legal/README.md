@@ -40,3 +40,16 @@ India Code and Official Gazette are primary government sources. Nyaykosh is a go
 
 ## Status
 Foundation and legislation adapters implemented. The national corpus has NOT yet been fully collected, reconciled or legally verified.
+
+## Collector reliability and evidence integrity
+
+The Nyaykosh collector supports `--help`, `--details`, `--out`, `--base-url`, and `--retries` (0–8). Transient HTTP statuses and network failures are retried with bounded exponential backoff; permanent client errors are not retried. The capture manifest stores a SHA-256 checksum for the exact JSONL output and records detail-fetch failures without discarding successful catalog records.
+
+Examples:
+
+```bash
+npm run data:collect:nyaykosh -- --help
+npm run data:collect:nyaykosh -- --details --retries 4
+```
+
+The checksum proves file integrity after capture; it does not prove that the source text is legally authoritative or complete. Verify every instrument against the primary Gazette/ministry publication before relying on its legal effect.
