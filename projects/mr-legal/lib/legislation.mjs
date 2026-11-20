@@ -70,7 +70,7 @@ export function normalizeIndiaCodeRecord(raw) {
     jurisdiction: first(raw.jurisdiction, raw.stateCode ? `IN-${raw.stateCode}` : 'IN'),
     issuing_authority: first(raw.ministry, raw.department, 'Legislative Department, Ministry of Law and Justice'),
     citation: first(raw.actNumber && raw.year ? `Act ${raw.actNumber} of ${raw.year}` : null, raw.citation, null),
-    original_url: url, publication_date: enactmentDate,
+    original_url: url, publication_date: validDate(first(raw.publicationDate, raw.publication_date)),
     commencement_date: validDate(first(raw.commencementDate, raw.commencement_date)),
     effective_from: validDate(first(raw.commencementDate, raw.commencement_date)), effective_to: null,
     legal_status: 'unverified', verification_status: 'needs_gazette_cross_check',
