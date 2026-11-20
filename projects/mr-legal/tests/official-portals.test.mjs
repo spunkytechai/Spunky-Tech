@@ -20,7 +20,7 @@ test('normalizes India Code after canonical host migration without inventing a d
 test('rejects unapproved host and malformed observation timestamp', () => {
   assert.throws(() => normalizeOfficialPortalCapture({
     source_id: 'IN-TELANGANA-EGAZETTE', requested_url: 'https://evil.example',
-    final_url: 'https://evil.example/', page_title: 'Fake', observed_at: 'now'
+    final_url: 'https://evil.example/', page_title: 'Fake', observed_at: '2026-11-21T00:00:00Z'
   }), /approved host/);
 });
 
