@@ -3,7 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { fetchNyaykoshCatalog, fetchNyaykoshLaw } from '../lib/legislation.mjs';
+import { fetchNyaykoshCatalog, fetchNyaykoshLaw, normalizeNyaykoshProvision, normalizeNyaykoshPenalty } from '../lib/legislation.mjs';
 
 const DEFAULT_BASE_URL = 'https://lawascode.negd.in/laac-api/v1';
 const USAGE = `Nyaykosh legislation collector
@@ -77,9 +77,28 @@ export async function collectNyaykosh({ args = process.argv.slice(2), fetchCatal
       catch (error) { failures.push({ api_slug: item.external_id, error: error.message }); records.push(item); }
     }
   } else records.push(...catalog);
+  const provisions = [];
+  const penalties = [];
+  for (const law of records) {
+    const raw = law?.metadata?.raw_source ?? {};
+    const rawProvisions = Array.isArray(raw.provisions) ? raw.provisions : Array.isArray(raw.sections) ? raw.sections : [];
+    const rawPenalties = Array.isArray(raw.penalties) ? raw.penalties : Array.isArray(raw.penaltySchedule) ? raw.penaltySchedule : Array.isArray(raw.penalty_schedule) ? raw.penalty_schedule : [];
+    for (const item of rawProvisions) {
+      try { provisions.push(normalizeNyaykoshProvision(item, law.external_id)); }
+      catch (error) { failures.push({ api_slug: law.external_id, resource: 'provision', error: error.message }); }
+    }
+    for (const item of rawPenalties) {
+      try { penalties.push(normalizeNyaykoshPenalty(item, law.external_id)); }
+      catch (error) { failures.push({ api_slug: law.external_id, resource: 'penalty', error: error.message }); }
+    }
+  }
   await mkdirImpl(output, { recursive: true });
   const jsonl = records.map(record => JSON.stringify(record)).join('\n') + (records.length ? '\n' : '');
+  const provisionsJsonl = provisions.map(record => JSON.stringify(record)).join('\n') + (provisions.length ? '\n' : '');
+  const penaltiesJsonl = penalties.map(record => JSON.stringify(record)).join('\n') + (penalties.length ? '\n' : '');
   await writeFileImpl(resolve(output, 'laws.jsonl'), jsonl, 'utf8');
+  await writeFileImpl(resolve(output, 'provisions.jsonl'), provisionsJsonl, 'utf8');
+  await writeFileImpl(resolve(output, 'penalties.jsonl'), penaltiesJsonl, 'utf8');
   const manifest = {
     dataset: 'Nyaykosh / NeGD structured legislation',
     api_base_url: options.baseUrl,
@@ -89,7 +108,11 @@ export async function collectNyaykosh({ args = process.argv.slice(2), fetchCatal
     detail_fetch_enabled: options.details,
     retry_limit: options.retries,
     record_count: records.length,
+    provision_count: provisions.length,
+    penalty_count: penalties.length,
     sha256_laws_jsonl: createHash('sha256').update(jsonl, 'utf8').digest('hex'),
+    sha256_provisions_jsonl: createHash('sha256').update(provisionsJsonl, 'utf8').digest('hex'),
+    sha256_penalties_jsonl: createHash('sha256').update(penaltiesJsonl, 'utf8').digest('hex'),
     failed_detail_fetches: failures,
     authority_note: 'Government structured legal data; verify each instrument against its primary Gazette/ministry publication before asserting legal effect.',
     records_file: 'laws.jsonl'
