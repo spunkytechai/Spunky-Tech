@@ -26,7 +26,7 @@ test('rejects unapproved host and malformed observation timestamp', () => {
 
 test('validates registry source identifiers and HTTPS provenance', () => {
   const result = validateSourceRegistry([
-    {id:'IN-X',name:'X',url:'https://example.gov.in/',authority_level:'official_government',jurisdiction:'IN'}
+    {id:'IN-X',name:'X',url:'https://legislative.gov.in/',authority_level:'official_government',jurisdiction:'IN'}
   ]);
   assert.deepEqual(result, []);
   assert.ok(validateSourceRegistry([{id:'IN-X',name:'',url:'http://bad',authority_level:'official_government'}]).length >= 2);
