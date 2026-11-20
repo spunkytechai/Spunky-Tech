@@ -1,0 +1,22 @@
+{
+  "name": "mr-legal",
+  "version": "0.5.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "test:data:python": "python -m unittest discover -s tests -p 'test_*.py' -v",
+    "data:validate": "node scripts/validate-source-registry.mjs",
+    "data:collect:sc": "python scripts/collect-supreme-metadata.py",
+    "data:collect:hc": "python scripts/collect-high-court-metadata.py",
+    "data:collect:nyaykosh": "node scripts/collect-nyaykosh.mjs",
+    "data:validate:portals": "npm run data:validate",
+    "test:portals": "node --test tests/official-portals.test.mjs",
+    "data:import:state-gazette": "node scripts/import-state-gazette-listing.mjs",
+    "data:acquire:state-gazette": "node scripts/acquire-state-gazette-documents.mjs",
+    "data:extract:state-gazette": "python scripts/extract_gazette_text.py",
+    "test:state-gazettes": "node --test tests/state-gazettes.test.mjs tests/state-gazette-import.test.mjs tests/gazette-acquisition.test.mjs",
+    "data:import:manipur": "node scripts/import-manipur-gazette.mjs",
+    "test:manipur-gazette": "node --test tests/manipur-gazette.test.mjs tests/manipur-gazette-import.test.mjs"
+  }
+}
