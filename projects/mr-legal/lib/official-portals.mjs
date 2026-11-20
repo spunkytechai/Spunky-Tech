@@ -6,7 +6,7 @@ const httpsUrl = value => {
   try { const u = new URL(value); return u.protocol === 'https:' ? u : null; }
   catch { return null; }
 };
-const approvedHost = host => host === 'gov.in' || host.endsWith('.gov.in') || host === 'nic.in' || host.endsWith('.nic.in') || host === 'www.legislative.gov.in' || host === 'legislative.gov.in' || host === 'github.com' || host.endsWith('.github.io') || host === 'github.com' || host.endsWith('.amazonaws.com') || host.endsWith('.s3.amazonaws.com');
+const approvedHost = host => host === 'gov.in' || host.endsWith('.gov.in') || host === 'nic.in' || host.endsWith('.nic.in') || host === 'www.legislative.gov.in' || host === 'legislative.gov.in' || host === 'github.com' || host.endsWith('.github.io') || host === 'github.com' || host.endsWith('.amazonaws.com') || host.endsWith('.s3.amazonaws.com') || host === 'registry.opendata.aws';
 
 export function normalizeOfficialPortalCapture(input) {
   if (!input?.source_id) throw new Error('source_id is required');
