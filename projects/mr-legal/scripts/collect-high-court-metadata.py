@@ -20,7 +20,7 @@ REGISTRY = "https://registry.opendata.aws/indian-high-court-judgments/"
 def build_sync_command(year: int, court: str | None, out: Path) -> list[str]:
     if year < 1950 or year > datetime.now().year:
         raise ValueError(f"Unsupported year: {year}")
-    if court is not None and not re.fullmatch(r"\\d+_\\d+", court):
+    if court is not None and not re.fullmatch(r"\d+_\d+", court):
         raise ValueError("Court code must use STATE_COURT format, e.g. 27_1")
 
     pattern = f"court={court}/bench=*/metadata.parquet" if court else "court=*/bench=*/metadata.parquet"
