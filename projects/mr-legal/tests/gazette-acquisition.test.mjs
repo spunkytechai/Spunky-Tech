@@ -35,7 +35,9 @@ test('downloads PDFs, deduplicates identical content and writes a manifest', asy
   assert.equal(result.duplicate_count, 1);
   assert.equal(files.size, 3);
   const rows = files.get('/out/manifest.jsonl').trim().split('\n').map(JSON.parse);
-  assert.equal(rows.length, 2);\n  assert.match(rows[0].verification_status, /downloaded_pending_legal_review/);\n  assert.equal(rows[1].duplicate_of_sha256, rows[0].sha256);
+  assert.equal(rows.length, 2);
+  assert.match(rows[0].verification_status, /downloaded_pending_legal_review/);
+  assert.equal(rows[1].duplicate_of_sha256, rows[0].sha256);
 });
 
 test('rejects oversized responses before writing them', async () => {
