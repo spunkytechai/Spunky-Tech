@@ -1,0 +1,11 @@
+{
+  "name": "mr-legal",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "data:validate": "node scripts/validate-source-registry.mjs",
+    "data:collect:sc": "python scripts/collect-supreme-metadata.py"
+  }
+}
