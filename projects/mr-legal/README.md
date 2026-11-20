@@ -162,3 +162,20 @@ Live inspection of the Government of Manipur's current e-Gazette portal showed d
 The central eGazette home page currently displayed recent issues, but the RecentUploads route redirected to an error page during inspection. The central portal is therefore not represented as a working automated feed. No bulk corpus count or legal verification is claimed.
 
 The acquisition script accepts only explicitly registered official hosts, including the known Manipur current and legacy archive hosts. Redirects to unregistered hosts fail closed. Migration `0004_gazette_extraction_evidence.sql` adds fields for final URL, download time and text-extraction evidence; it has not been applied to a live database.
+
+## Manipur eGazette specific adapter
+
+A live TinyFish-assisted browser inspection of the official Manipur eGazette confirmed:
+- Current listing: `https://egazettemanipur.mn.gov.in/`
+- Listing fields include Gazette ID/number, publication date, issue type, department and notification title/subject.
+- Detail/open-file route: `/OPENFILE1.aspx?ID={gazette_id}&etype={SPECIAL|NSPECIAL}`
+- Directorate listing pages: `/en/o_gazette_list/` (ordinary) and `/en/eo_gazette_list/` (extraordinary), with page-number pagination.
+- Current portal showed recent issues dated 20 November 2026, including extraordinary issue numbers 282 and 281.
+
+The new `lib/manipur-gazette.mjs` normalizes observed listing rows and detail captures without asserting legal effect. `scripts/import-manipur-gazette.mjs` writes JSONL plus a SHA-256 manifest from an explicit capture file:
+
+```bash
+npm run data:import:manipur -- --input data/raw/manipur/listing-capture.json
+```
+
+This version is intentionally a capture importer, not a headless live scraper or bulk downloader. PDF content still needs to be downloaded and hashed separately, then checked against the digitally signed original Gazette. The browser inspection only opened the public listing/detail-route patterns and did not bulk-download the archive.
