@@ -137,3 +137,28 @@ npm run data:import:state-gazette -- --source IN-MANIPUR-EGAZETTE --input data/r
 ```
 
 Migration `0003_official_state_portals.sql` contains portal evidence, official source documents and state Gazette-specific records with content hashes and separate publication/commencement dates. The migration has not been applied to a live database in this environment.
+
+
+## Gazette PDF acquisition and OCR
+
+The acquisition stage now downloads actual PDF bytes from a source-specific HTTPS host allowlist. It checks the redirect destination, enforces a maximum file size, validates the PDF magic signature, hashes the bytes with SHA-256, deduplicates identical content and writes a JSONL evidence manifest. A successful download is still marked `downloaded_pending_legal_review`; a checksum proves integrity, not legal authority or commencement.
+
+1. Capture a portal listing into JSONL records with `source_id`, `source_url`, `document_url`, `title` and `jurisdiction`.
+2. Download the referenced documents:
+   ```bash
+   npm run data:acquire:state-gazette -- --input data/raw/state-gazettes/listing.jsonl --out data/raw/state-gazettes/documents --max-mb 25
+   ```
+3. Extract embedded text, falling back to OCR for scanned PDFs when the local tools are installed:
+   ```bash
+   python scripts/extract_gazette_text.py --input-dir data/raw/state-gazettes/documents --output-dir data/processed/state-gazettes --ocr auto --language eng
+   ```
+
+OCR dependencies are Poppler (`pdfinfo`, `pdftoppm`, `pdftotext`) and Tesseract. For multilingual OCR, install the corresponding Tesseract language packs and set `--language eng+hin` or another supported combination. Page-count limits prevent silent partial OCR. The extractor writes text and a separate JSON record containing source-PDF and text SHA-256 hashes, extraction method and status. All extracted text remains pending review; OCR output is not a legal transcription.
+
+### Confirmed Manipur portal route
+
+Live inspection of the Government of Manipur's current e-Gazette portal showed dated issue identifiers and `OPENFILE1.aspx` document-opening routes. An older Directorate listing detail page exposed the document path `/media/gazzete/EOG-212.pdf`, with Gazette number 212, Extra-Ordinary type and publication date 21 November 2025. The PDF endpoint could not be fetched successfully by the current acquisition environment, so this is route discovery evidence only—not a downloaded document or a tested production connector. The current e-Gazette archive is listed as free from 1 August 2025; the Directorate states that the 1947–2020 legacy archive is fee-based.
+
+The central eGazette home page currently displayed recent issues, but the RecentUploads route redirected to an error page during inspection. The central portal is therefore not represented as a working automated feed. No bulk corpus count or legal verification is claimed.
+
+The acquisition script accepts only explicitly registered official hosts, including the known Manipur current and legacy archive hosts. Redirects to unregistered hosts fail closed. Migration `0004_gazette_extraction_evidence.sql` adds fields for final URL, download time and text-extraction evidence; it has not been applied to a live database.
