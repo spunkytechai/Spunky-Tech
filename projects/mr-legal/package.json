@@ -1,6 +1,6 @@
 {
   "name": "mr-legal",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,6 +8,7 @@
     "test:data:python": "python -m unittest discover -s tests -p 'test_*.py' -v",
     "data:validate": "node scripts/validate-source-registry.mjs",
     "data:collect:sc": "python scripts/collect-supreme-metadata.py",
-    "data:collect:hc": "python scripts/collect-high-court-metadata.py"
+    "data:collect:hc": "python scripts/collect-high-court-metadata.py",
+    "data:collect:nyaykosh": "node scripts/collect-nyaykosh.mjs"
   }
 }
