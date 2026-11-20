@@ -7,7 +7,9 @@
     "category": "legislation",
     "authority_level": "official_government",
     "url": "https://indiacode.gov.in/",
-    "legacy_urls": ["https://www.indiacode.nic.in/"],
+    "legacy_urls": [
+      "https://www.indiacode.nic.in/"
+    ],
     "access_method": "public_portal",
     "api_status": "not_verified",
     "license_status": "review_required_per_document",
@@ -118,5 +120,50 @@
     "api_status": "not_verified",
     "license_status": "review_required_per_document",
     "coverage_status": "yearwise_archive_listed"
+  },
+  {
+    "id": "IN-AP-EGAZETTE",
+    "name": "Andhra Pradesh e-Gazette",
+    "publisher": "Government of Andhra Pradesh",
+    "jurisdiction": "IN-AP",
+    "category": "state_gazette",
+    "authority_level": "official_state_government",
+    "url": "https://apegazette.cgg.gov.in/",
+    "access_method": "state_public_portal",
+    "api_status": "not_verified",
+    "license_status": "review_required_per_document",
+    "coverage_status": "recent_weekly_gazettes_visible_search_result",
+    "notes": "Search result showed recent weekly Gazette items; browser extraction returned HTTP 403 during inspection. No API inferred."
+  },
+  {
+    "id": "IN-KERALA-COMPOSE",
+    "name": "Kerala COMPOSE e-Gazette",
+    "publisher": "Printing Department, Government of Kerala",
+    "jurisdiction": "IN-KL",
+    "category": "state_gazette",
+    "authority_level": "official_state_government",
+    "url": "https://compose.kerala.gov.in/home",
+    "legacy_archive_url": "https://gazette.kerala.gov.in/",
+    "access_method": "state_portal_and_search_forms",
+    "api_status": "routes_observed_api_unverified",
+    "license_status": "review_required_per_document",
+    "coverage_status": "current_and_legacy_routes_listed",
+    "notes": "Portal exposes weekly and extra-ordinary Gazette services and search-by-file-number links. Legacy archive is linked for Gazettes before 2021-10-02. Portal links reveal egazetteSearchWithFileNumber route."
+  },
+  {
+    "id": "IN-MANIPUR-EGAZETTE",
+    "name": "Manipur Government Press Gazette",
+    "publisher": "Directorate of Printing & Stationery, Government of Manipur",
+    "jurisdiction": "IN-MN",
+    "category": "state_gazette",
+    "authority_level": "official_state_government",
+    "url": "https://manipurgovtpress.nic.in/en/gazette/",
+    "current_archive_url": "https://egazettemanipur.mn.gov.in/",
+    "legacy_archive_url": "https://egazette.mn.gov.in/",
+    "access_method": "public_portal_and_document_download",
+    "api_status": "routes_observed_api_unverified",
+    "license_status": "review_required_per_document",
+    "coverage_status": "current_archive_from_2025_08_01_free_legacy_archive_1947_to_2020_paid",
+    "notes": "Official department page says e-Gazettes are digitally signed and publicly downloadable. Current archive from 2025-08-01 is free; legacy archive 1947-2020 is fee-based. Website page lists weekly and extraordinary Gazette listing routes."
   }
 ]
