@@ -40,3 +40,7 @@ jobs:
         run: |
           node --check lib/legislation.mjs
           node --check scripts/collect-nyaykosh.mjs
+          node --check lib/official-portals.mjs
+          node --check lib/state-gazettes.mjs
+          node --check scripts/import-state-gazette-listing.mjs
+          npm run test:state-gazettes
