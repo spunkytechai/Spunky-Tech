@@ -15,6 +15,8 @@
     "data:import:state-gazette": "node scripts/import-state-gazette-listing.mjs",
     "data:acquire:state-gazette": "node scripts/acquire-state-gazette-documents.mjs",
     "data:extract:state-gazette": "python scripts/extract_gazette_text.py",
-    "test:state-gazettes": "node --test tests/state-gazettes.test.mjs tests/state-gazette-import.test.mjs tests/gazette-acquisition.test.mjs"
+    "test:state-gazettes": "node --test tests/state-gazettes.test.mjs tests/state-gazette-import.test.mjs tests/gazette-acquisition.test.mjs",
+    "data:import:manipur": "node scripts/import-manipur-gazette.mjs",
+    "test:manipur-gazette": "node --test tests/manipur-gazette.test.mjs tests/manipur-gazette-import.test.mjs"
   }
 }
