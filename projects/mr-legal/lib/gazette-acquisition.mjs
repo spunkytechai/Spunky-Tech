@@ -56,34 +56,39 @@ export async function acquireGazetteDocuments({ records, output_dir, fetch_impl 
   const output = resolve(output_dir);
   await mkdir_impl(output, { recursive: true });
   const manifest = [], seen = new Set();
-  let duplicate_count = 0;
+  let duplicate_count = 0, downloaded_count = 0;
   for (const record of records) {
     const source = SOURCES.get(record?.source_id);
     if (!source) throw new Error('source_id is not a registered Gazette source');
     officialHttpsUrl(record.source_url, source);
     const requestedUrl = officialHttpsUrl(record.document_url, source);
     const response = await fetch_impl(requestedUrl.toString(), { method: 'GET', redirect: 'follow', signal: AbortSignal.timeout(timeout_ms), headers: { accept: 'application/pdf,application/octet-stream;q=0.9' } });
-    if (!response.ok) throw new Error(`download failed with HTTP ${response.status} for ${requestedUrl.hostname}`);
+    if (!response.ok) throw new Error(\`download failed with HTTP \${response.status} for \${requestedUrl.hostname}\`);
     const finalUrl = response.url || requestedUrl.toString();
     officialHttpsUrl(finalUrl, source);
     const contentLength = Number(response.headers?.get?.('content-length'));
-    if (Number.isFinite(contentLength) && contentLength > max_bytes) throw new Error(`document exceeds max_bytes (${max_bytes})`);
+    if (Number.isFinite(contentLength) && contentLength > max_bytes) throw new Error(\`document exceeds max_bytes (\${max_bytes})\`);
     const bytes = Buffer.from(await response.arrayBuffer());
-    if (bytes.length > max_bytes) throw new Error(`document exceeds max_bytes (${max_bytes})`);
+    if (bytes.length > max_bytes) throw new Error(\`document exceeds max_bytes (\${max_bytes})\`);
     const capturedAt = now().toISOString();
     const row = normalizeGazetteDownload({ ...record, final_url: finalUrl, bytes, captured_at: record.captured_at ?? capturedAt, downloaded_at: capturedAt });
-    if (seen.has(row.sha256)) { duplicate_count += 1; continue; }
+    const fileName = \`\${row.sha256}.pdf\`;
+    if (seen.has(row.sha256)) {
+      duplicate_count += 1;
+      manifest.push({ ...row, file_name: fileName, duplicate_of_sha256: row.sha256 });
+      continue;
+    }
     seen.add(row.sha256);
-    const fileName = `${row.sha256}.pdf`;
     await write_file_impl(resolve(output, fileName), bytes, { flag: 'wx' }).catch(async error => {
       if (error?.code !== 'EEXIST') throw error;
     });
+    downloaded_count += 1;
     manifest.push({ ...row, file_name: fileName });
   }
   const jsonl = manifest.map(row => JSON.stringify(row)).join('\n') + (manifest.length ? '\n' : '');
   await write_file_impl(resolve(output, 'manifest.jsonl'), jsonl, 'utf8');
   const summary = {
-    captured_at: now().toISOString(), requested_count: records.length, downloaded_count: manifest.length,
+    captured_at: now().toISOString(), requested_count: records.length, manifest_record_count: manifest.length, downloaded_count,
     duplicate_count, failed_count: 0, legal_effect_verified_count: 0,
     note: 'PDF integrity and provenance captured. No document is legally verified by acquisition alone.'
   };
